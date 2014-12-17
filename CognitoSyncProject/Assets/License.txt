@@ -1,0 +1,187 @@
+﻿AWS MOBILE SDK FOR UNITY DEVELOPER PREVIEW LICENSE AGREEMENT
+
+THIS IS AN AGREEMENT BETWEEN YOU AND AMAZON WEB SERVICES, INC. (WITH ITS AFFILIATES, “AWS” OR "WE" OR "US") THAT GOVERNS YOUR USE OF THE SOFTWARE (TOGETHER WITH ANY UPDATES AND ENHANCEMENTS TO IT, AND ACCOMPANYING DOCUMENTATION, THE "SOFTWARE") THAT WE MAKE AVAILABLE TO YOU (THIS “LICENSE AGREEMENT”). IF YOU INSTALL OR USE THE SOFTWARE, YOU WILL BE BOUND BY THIS LICENSE AGREEMENT. UNLESS OTHERWISE DEFINED IN THIS LICENSE AGREEMENT, CAPITALIZED TERMS WILL HAVE THE SAME MEANING AS SET FORTH IN THE AWS CUSTOMER AGREEMENT POSTED AT AWS.AMAZON.COM/AGREEMENT OR OTHER AGREEMENT WITH US GOVERNING YOUR USE OF OUR SERVICES (THE "CUSTOMER AGREEMENT”).
+
+1.	Use of the Software
+
+We hereby grant you a personal, limited, nonexclusive, non-transferable, non-sublicenseable license to install and use the Software solely with the Services. Some components of the Software (whether developed by AWS or third parties) may be governed by separate licenses, as indicated in the license, notice, readme, or other files distributed with the applicable component. Your license rights with respect to these individual components are defined by the applicable license, and nothing in this License Agreement will restrict, limit, or otherwise affect any rights or obligations you may have, or conditions to which you may be subject, under such licenses. 
+
+2.	Limitations
+
+You may not, and you will not encourage, assist or authorize any other person to (a) sell, rent, lease, lend, loan, act as a service bureau, publicly communicate, transform, or sub-license the Software or otherwise assign any rights to the Software in whole or in part; (b) reverse engineer, disassemble, or decompile the Software or apply any other process or procedure to derive the source code of any binary code present in the Software; (c) modify, alter, tamper with, repair, or otherwise create derivative works of the Software; (d) use the Software to create additional software that replicates the functionality of, or is intended to replace, the Software; (e) access or use the Software or a Service in a way intended to avoid incurring fees or exceeding usage limits or quotas; (f) use the Software for any purpose other than with the Services; (g) directly or indirectly distribute the Software installed on electronic devices or systems if such Software provides the user interface or primary functionality of such electronic device or system without a separate license from Unity Technologies ApS (“Unity”); (h) directly or indirectly distribute Software (to the extent it is interactive) by means of streaming or broadcasting such Software that is primarily executed on a server and transmitted over the Internet or other network to end user devices without a separate license from Unity; or (i) distribute or publish any Software in connection with any Gambling Activities without a separate license agreement from Unity. “Gambling Activities” means any gambling product or service offered in any market or application that is regulated by any local, state or national authority and requires a gambling license. You may not use, modify, or distribute the Software in any manner that would require disclosure, license, or distribution of the source code of the Software or grant others any rights to modify the Software. We may provide you with the source code for all or part of the Software solely for your reference purposes. 
+
+3.	Redistribution 
+
+You may copy, distribute, and incorporate the Software into your own applications, subject to the following conditions: (a) you retain without modification any copyright, patent, trademark, or attribution notices that are present in the Software; (b) you have an account in good standing with us; (c) you add significant functionality to the Software in your applications and distribute it only as part of your applications; and (d) you distribute the Software for use solely with the Services. 
+
+4.	Reservation of Rights
+
+You may not use the Software for any illegal purpose. The Software is the intellectual property of us or our licensors. The structure, organization, and code of the Software are our valuable trade secrets and our confidential information. The Software is protected by law, including without limitation copyright laws and international treaty provisions. Except for the rights explicitly granted to you in this License Agreement, all right, title and interest in the Software are reserved and retained by us and our licensors. You do not acquire any intellectual property or other rights in the Software as a result of downloading the Software.
+
+5.	Updates
+
+In order to keep the Software up-to-date, we may offer automatic or manual updates at any time. If we elect to provide maintenance or support of any kind, we may terminate that maintenance or support at any time without notice to you. The terms of this License Agreement govern the Software and any updates or upgrades to the Software that we may provide that replace or supplement the original Software, unless the update or upgrade is accompanied by a separate license, in which case the terms of that license will govern.
+
+6.	Feedback.
+
+If you provide suggestions, ideas, or other feedback to us about the Software, we will be free to exercise all rights in such feedback without restriction and without compensating you. Notwithstanding the above, nothing herein shall supersede or modify the terms of any separate license agreement you may have executed with us regarding such contributions.
+
+7.	Termination
+
+You may terminate this License Agreement at any time by uninstalling or destroying all copies of the Software that are in your possession or control. Your rights under this License Agreement will automatically terminate without notice from us if you fail to comply with any of its terms or any term of the Customer Agreement (to the extent you are an AWS customer). In the case of termination, you must cease all use and destroy all copies of the Software. We may modify, suspend, discontinue, or terminate your right to use part or all of the Software at any time without notice to you, and in that event we may modify the Software to make it inoperable. We will not be liable to you should we exercise those rights. Our failure to insist upon or enforce your strict compliance with this License Agreement will not constitute a waiver of any of our rights. Sections 2, 4, 5, 6, 7, 8, 9, 14 and 15 will survive termination of this License Agreement.
+
+8.	Disclaimer of Warranties and Limitation of Liability
+
+a. YOU EXPRESSLY ACKNOWLEDGE AND AGREE THAT INSTALLATION AND USE OF, AND ANY OTHER ACCESS TO, THE SOFTWARE IS AT YOUR SOLE RISK. THE SOFTWARE IS DELIVERED TO YOU “AS IS” WITH ALL FAULTS AND WITHOUT WARRANTY OF ANY KIND, AND AWS, ITS LICENSORS AND DISTRIBUTORS, AND EACH OF THEIR RESPECTIVE AFFILIATES AND SUPPLIERS (COLLECTIVELY, THE “RELEASED PARTIES”) DISCLAIM ALL WARRANTIES, EXPRESS OR IMPLIED, INCLUDING WITHOUT LIMITATION THE IMPLIED WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, ACCURACY, QUIET ENJOYMENT, AND NON-INFRINGEMENT. NO ORAL OR WRITTEN INFORMATION OR ADVICE GIVEN BY A RELEASED PARTY OR AN AUTHORIZED REPRESENTATIVE OF A RELEASED PARTY WILL CREATE A WARRANTY. THE LAWS OF CERTAIN JURISDICTIONS DO NOT ALLOW THE DISCLAIMER OF IMPLIED WARRANTIES. IF THESE LAWS APPLY TO YOU, SOME OR ALL OF THE ABOVE DISCLAIMERS, EXCLUSIONS, OR LIMITATIONS MAY NOT APPLY TO YOU, AND YOU MAY HAVE ADDITIONAL RIGHTS.
+
+b. TO THE EXTENT NOT PROHIBITED BY LAW, NO RELEASED PARTY WILL BE LIABLE TO YOU FOR ANY DAMAGES, INCLUDING DIRECT, INCIDENTAL, SPECIAL, PUNITIVE, OR CONSEQUENTIAL DAMAGES FOR BREACH OF ANY EXPRESS OR IMPLIED WARRANTY, BREACH OF CONTRACT, NEGLIGENCE, STRICT LIABILITY, OR ANY OTHER LEGAL THEORY RELATED TO THE SOFTWARE, INCLUDING WITHOUT LIMITATION ANY DAMAGES ARISING OUT OF LOSS OF PROFITS, REVENUE, DATA, OR USE OF THE APPLICATION, EVEN IF A RELEASED PARTY HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES. IN ANY CASE, ANY RELEASED PARTY’S AGGREGATE LIABILITY UNDER THIS LICENSE AGREEMENT WILL BE LIMITED TO $50.00. THESE LIMITATIONS AND DISCLAIMERS APPLY EXCEPT TO THE EXTENT PROHIBITED BY APPLICABLE LAW.
+
+9.	Indemnification
+
+You are liable for and will defend, indemnify, and hold harmless the Released Parties and their officers, directors, agents, and employees, from and against any liability, loss, damage, cost, or expense (including reasonable attorneys’ fees) arising out of your use, modification, or distribution of the Software, violation of the License Agreement, violation of applicable law, or violation of any right of any person or entity, including without limitation intellectual property rights.
+
+10.	Source Code
+
+Please see the technical documentation for information on how to retrieve a copy of the source code for certain software components included with the Software, if any. 
+
+11.	Privacy
+
+AWS follows the same information practices as Amazon.com, and information we collect is subject to the Amazon.com Privacy Notice. By using this Software, you are accepting the practices described in the Amazon.com Privacy Notice. Additionally, Unity collects certain data from this Software. Unity’s Privacy Policy is located at http://unity3d.com/company/legal/privacy-policy. 
+
+12.	Export Regulations
+
+You will comply with all export and re-export restrictions and regulations of the United States Department of Commerce and other United States and foreign agencies and authorities that may apply to the Software, and not to transfer, or encourage, assist, or authorize the transfer of the Software to a prohibited country or otherwise in violation of any applicable restrictions or regulations.
+
+13.	U.S. Government End Users
+
+The Software is provided to the U.S. Government as “commercial items,” “commercial computer software,” “commercial computer software documentation,” and “technical data” with the same rights and restrictions generally applicable to the Software. If you are using the Software on behalf of the U.S. Government and these terms fail to meet the U.S. Government’s needs or are inconsistent in any respect with federal law, you will immediately discontinue your use of the Software. The terms “commercial item” “commercial computer software,” “commercial computer software documentation,” and “technical data” are defined in the Federal Acquisition Regulation and the Defense Federal Acquisition Regulation Supplement.
+
+14.	Amendment
+
+We may amend this License Agreement at our sole discretion by posting the revised terms on the AWS website (aws.amazon.com) or within the Software. Your continued use of the Software after any amendment's effective date evidences your agreement to be bound by it.
+
+15.	Severability
+
+If any portion of this License Agreement is held to be invalid or unenforceable, the remaining portions of this License Agreement will remain in full force and effect. Any invalid or unenforceable portions will be interpreted to effect and intent of the original portion. If such construction is not possible, the invalid or unenforceable portion will be severed from this License Agreement but the rest of the License Agreement will remain in full force and effect.
+
+16.	Governing Law; Venue
+
+The laws of the State of Washington, without reference to conflict of law rules, govern this License Agreement and any dispute of any sort that might arise between you and us. Any dispute relating in any way to this License Agreement will be adjudicated in any state or federal court in King County, Washington. You consent to exclusive jurisdiction and venue in those courts. We may seek injunctive or other relief in any state, federal, or national court of competent jurisdiction for any actual or alleged infringement of our, our affiliates, or any third party’s intellectual property or other proprietary rights. The United Nations Convention for the International Sale of Goods does not apply to this License Agreement.
+
+17.	Integration
+
+This License Agreement and the Customer Agreement (to the extent you are an AWS customer) are the entire agreement between you and us regarding the subject matter of this License Agreement and supersede all prior or contemporaneous representations, understandings, agreements, or communications between you and us, whether written or verbal, regarding the subject matter of this License Agreement. In the event of any conflict between the terms of License Agreement and the Customer Agreement (to the extent you are an AWS customer), the terms of this License Agreement will apply.
+
+
+END OF TERMS AND CONDITIONS
+
+====================
+
+Amazon Cognito Sync - Copyright 2014 Amazon.com, Inc. or its affiliates. All Rights Reserved.(Amazon Software License)
+
+Amazon Software License
+
+This Amazon Software License (“License”) governs your use, reproduction, and distribution of the accompanying software as specified below.
+1. Definitions
+“Licensor” means any person or entity that distributes its Work.
+
+“Software” means the original work of authorship made available under this License.
+
+“Work” means the Software and any additions to or derivative works of the Software that are made available under this License.
+
+The terms “reproduce,” “reproduction,” “derivative works,” and “distribution” have the meaning as provided under U.S. copyright law; provided, however, that for the purposes of this License, derivative works shall not include works that remain separable from, or merely link (or bind by name) to the interfaces of, the Work.
+
+Works, including the Software, are “made available” under this License by including in or with the Work either (a) a copyright notice referencing the applicability of this License to the Work, or (b) a copy of this License.
+2. License Grants
+2.1 Copyright Grant. Subject to the terms and conditions of this License, each Licensor grants to you a perpetual, worldwide, non-exclusive, royalty-free, copyright license to reproduce, prepare derivative works of, publicly display, publicly perform, sublicense and distribute its Work and any resulting derivative works in any form.
+2.2 Patent Grant. Subject to the terms and conditions of this License, each Licensor grants to you a perpetual, worldwide, non-exclusive, royalty-free patent license to make, have made, use, sell, offer for sale, import, and otherwise transfer its Work, in whole or in part. The foregoing license applies only to the patent claims licensable by Licensor that would be infringed by Licensor’s Work (or portion thereof) individually and excluding any combinations with any other materials or technology.
+3. Limitations
+3.1 Redistribution. You may reproduce or distribute the Work only if (a) you do so under this License, (b) you include a complete copy of this License with your distribution, and (c) you retain without modification any copyright, patent, trademark, or attribution notices that are present in the Work.
+3.2 Derivative Works. You may specify that additional or different terms apply to the use, reproduction, and distribution of your derivative works of the Work (“Your Terms”) only if (a) Your Terms provide that the use limitation in Section 3.3 applies to your derivative works, and (b) you identify the specific derivative works that are subject to Your Terms. Notwithstanding Your Terms, this License (including the redistribution requirements in Section 3.1) will continue to apply to the Work itself.
+3.3 Use Limitation. The Work and any derivative works thereof only may be used or intended for use with the web services, computing platforms or applications provided by Amazon.com, Inc. or its affiliates, including Amazon Web Services, Inc.
+3.4 Patent Claims. If you bring or threaten to bring a patent claim against any Licensor (including any claim, cross-claim or counterclaim in a lawsuit) to enforce any patents that you allege are infringed by any Work, then your rights under this License from such Licensor (including the grants in Sections 2.1 and 2.2) will terminate immediately.
+3.5 Trademarks. This License does not grant any rights to use any Licensor’s or its affiliates’ names, logos, or trademarks, except as necessary to reproduce the notices described in this License.
+3.6 Termination. If you violate any term of this License, then your rights under this License (including the grants in Sections 2.1 and 2.2) will terminate immediately.
+4. Disclaimer of Warranty.
+THE WORK IS PROVIDED “AS IS” WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING WARRANTIES OR CONDITIONS OF M ERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, TITLE OR NON-INFRINGEMENT. YOU BEAR THE RISK OF UNDERTAKING ANY ACTIVITIES UNDER THIS LICENSE. SOME STATES’ CONSUMER LAWS DO NOT ALLOW EXCLUSION OF AN IMPLIED WARRANTY, SO THIS DISCLAIMER MAY NOT APPLY TO YOU.
+5. Limitation of Liability.
+EXCEPT AS PROHIBITED BY APPLICABLE LAW, IN NO EVENT AND UNDER NO LEGAL THEORY, WHETHER IN TORT (INCLUDING NEGLIGENCE), CONTRACT, OR OTHERWISE SHALL ANY LICENSOR BE LIABLE TO YOU FOR DAMAGES, INCLUDING ANY DIRECT, INDIRECT, SPECIAL, INCIDENTAL, OR CONSEQUENTIAL DAMAGES ARISING OUT OF OR RELATED TO THIS LICENSE, THE USE OR INABILITY TO USE THE WORK (INCLUDING BUT NOT LIMITED TO LOSS OF GOODWILL, BUSINESS INTERRUPTION, LOST PROFITS OR DATA, COMPUTER FAILURE OR MALFUNCTION, OR ANY OTHER COMM ERCIAL DAMAGES OR LOSSES), EVEN IF THE LICENSOR HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES.
+Effective Date – April 18, 2008 © 2008 Amazon.com, Inc. or its affiliates. All rights reserved.
+
+====================
+
+**********************
+THIRD PARTY COMPONENTS
+**********************
+This software includes third party software subject to the following copyrights:
+
+-Json processing from LitJson � 
+All the source code and related files distributed with this software have
+been dedicated to the public domain by the authors.
+
+Anyone is free to copy, modify, publish, use, compile, sell, or distribute
+the software, either in source code form or as a compiled binary, for any
+purpose, commercial or non-commercial, and by any means.
+
+- Performing CRC32 checks from vbAccelerator.com
+vbAccelerator Software License 
+
+Version 1.0 
+
+Copyright (c) 2002 vbAccelerator.com 
+
+Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met: 
+
+Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer 
+Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution. 
+The end-user documentation included with the redistribution, if any, must include the following acknowledgment: 
+
+"This product includes software developed by vbAccelerator ( http://vbaccelerator.com/)." 
+
+Alternately, this acknowledgment may appear in the software itself, if and wherever such third-party acknowledgments normally appear. 
+The names "vbAccelerator" and "vbAccelerator.com" must not be used to endorse or promote products derived from this software without prior written permission. For written permission, please contact vbAccelerator through steve@vbaccelerator.com. 
+Products derived from this software may not be called "vbAccelerator", nor may "vbAccelerator" appear in their name, without prior written permission of vbAccelerator. 
+
+THIS SOFTWARE IS PROVIDED "AS IS" AND ANY EXPRESSED OR IMPLIED WARRANTIES, 
+INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY 
+AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL 
+VBACCELERATOR OR ITS CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, 
+INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT 
+NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, 
+DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY 
+OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING 
+NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, 
+EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. 
+
+This software consists of voluntary contributions made by many individuals on behalf of the vbAccelerator. For more information, please see http://vbaccelerator.com/ . 
+
+The vbAccelerator licence is based on the Apache Software Foundation Software Licence, Copyright (c) 2000 The Apache Software Foundation. All rights reserved.
+
+- MD5 checks in the Windows Phone 8 variant of the SDK from Microsoft Corporation
+
+Microsoft Public License (MS-PL)
+
+This license governs use of the accompanying software. If you use the software, you
+accept this license. If you do not accept the license, do not use the software.
+
+1. Definitions
+The terms "reproduce," "reproduction," "derivative works," and "distribution" have the
+same meaning here as under U.S. copyright law.
+A "contribution" is the original software, or any additions or changes to the software.
+A "contributor" is any person that distributes its contribution under this license.
+"Licensed patents" are a contributor's patent claims that read directly on its contribution.
+
+2. Grant of Rights
+(A) Copyright Grant- Subject to the terms of this license, including the license conditions and limitations in section 3, each contributor grants you a non-exclusive, worldwide, royalty-free copyright license to reproduce its contribution, prepare derivative works of its contribution, and distribute its contribution or any derivative works that you create.
+(B) Patent Grant- Subject to the terms of this license, including the license conditions and limitations in section 3, each contributor grants you a non-exclusive, worldwide, royalty-free license under its licensed patents to make, have made, use, sell, offer for sale, import, and/or otherwise dispose of its contribution in the software or derivative works of the contribution in the software.
+
+3. Conditions and Limitations
+(A) No Trademark License- This license does not grant you rights to use any contributors' name, logo, or trademarks.
+(B) If you bring a patent claim against any contributor over patents that you claim are infringed by the software, your patent license from such contributor to the software ends automatically.
+(C) If you distribute any portion of the software, you must retain all copyright, patent, trademark, and attribution notices that are present in the software.
+(D) If you distribute any portion of the software in source code form, you may do so only under this license by including a complete copy of this license with your distribution. If you distribute any portion of the software in compiled or object code form, you may only do so under a license that complies with this license.
+(E) The software is licensed "as-is." You bear the risk of using it. The contributors give no express warranties, guarantees or conditions. You may have additional consumer rights under your local laws which this license cannot change. To the extent permitted under your local laws, the contributors exclude the implied warranties of merchantability, fitness for a particular purpose and non-infringement.
+
+- SQLite
+Copyright: https://www.sqlite.org/copyright.html
+Source: https://github.com/Busta117/SQLiteUnityKit

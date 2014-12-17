@@ -1,0 +1,127 @@
+﻿/*
+ * Copyright 2014-2014 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+ *
+ *
+ * Licensed under the AWS Mobile SDK for Unity Developer Preview License Agreement (the "License").
+ * You may not use this file except in compliance with the License.
+ * A copy of the License is located in the "license" file accompanying this file.
+ * See the License for the specific language governing permissions and limitations under the License.
+ *
+ */
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Text;
+using System.Security.Cryptography;
+
+using Amazon.Runtime;
+using System.Globalization;
+
+namespace Amazon.Util
+{
+    internal static partial class CryptoUtilFactory
+    {
+        partial class CryptoUtil : ICryptoUtil
+        {
+            public string HMACSign(string data, string key, SigningAlgorithm algorithmName)
+            {
+                var binaryData = Encoding.UTF8.GetBytes(data);
+                return HMACSign(binaryData, key, algorithmName);
+            }
+
+            public string HMACSign(byte[] data, string key, SigningAlgorithm algorithmName)
+            {
+                if (String.IsNullOrEmpty(key))
+                    throw new ArgumentNullException("key", "Please specify a Secret Signing Key.");
+
+                if (data == null || data.Length == 0)
+                    throw new ArgumentNullException("data", "Please specify data to sign.");
+
+                KeyedHashAlgorithm algorithm = KeyedHashAlgorithm.Create(algorithmName.ToString().ToUpper(CultureInfo.InvariantCulture));
+                if (null == algorithm)
+                    throw new InvalidOperationException("Please specify a KeyedHashAlgorithm to use.");
+
+                try
+                {
+                    algorithm.Key = Encoding.UTF8.GetBytes(key);
+                    byte[] bytes = algorithm.ComputeHash(data);
+                    return Convert.ToBase64String(bytes);
+                }
+                finally
+                {
+                    algorithm.Clear();
+                }
+            }
+
+
+
+            public byte[] ComputeSHA256Hash(byte[] data)
+            {
+                return SHA256HashAlgorithmInstance.ComputeHash(data);
+            }
+
+            public byte[] ComputeSHA256Hash(Stream steam)
+            {
+                return SHA256HashAlgorithmInstance.ComputeHash(steam);
+            }
+
+            public byte[] ComputeMD5Hash(byte[] data)
+            {
+                byte[] hashed = MD5.Create().ComputeHash(data);
+                return hashed;
+            }
+
+            public byte[] ComputeMD5Hash(Stream steam)
+            {                
+                byte[] hashed = MD5.Create().ComputeHash(steam);
+                return hashed;
+            }
+
+            public byte[] HMACSignBinary(byte[] data, byte[] key, SigningAlgorithm algorithmName)
+            {
+                if (key == null || key.Length == 0)
+                    throw new ArgumentNullException("key", "Please specify a Secret Signing Key.");
+
+                if (data == null || data.Length == 0)
+                    throw new ArgumentNullException("data", "Please specify data to sign.");
+
+                KeyedHashAlgorithm algorithm = KeyedHashAlgorithm.Create(algorithmName.ToString().ToUpper(CultureInfo.InvariantCulture));
+                if (null == algorithm)
+                    throw new InvalidOperationException("Please specify a KeyedHashAlgorithm to use.");
+
+                try
+                {
+                    algorithm.Key = key;
+                    byte[] bytes = algorithm.ComputeHash(data);
+                    return bytes;
+                }
+                finally
+                {
+                    algorithm.Clear();
+                }
+            }
+
+            [ThreadStatic]
+            private static HashAlgorithm _hashAlgorithm = null;
+            private static HashAlgorithm SHA256HashAlgorithmInstance
+            {
+                get
+                {
+                    if (null == _hashAlgorithm)
+                    {
+                        try
+                        {
+                            _hashAlgorithm = HashAlgorithm.Create("SHA-256");
+                        }
+                        catch (Exception) // Managed Hash Provider is not FIPS compliant.
+                        {
+                            //_hashAlgorithm = new SHA256CryptoServiceProvider();
+                        }
+                    }
+                    return _hashAlgorithm;
+                }
+            }
+        }
+    }
+}
