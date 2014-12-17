@@ -1,4 +1,4 @@
-# AWS SDK for Unity Samples
+# AWS Mobile SDK for Unity Samples
 
 
 ## [Cognito Sync Sample](https://github.com/awslabs/aws-sdk-unity-samples)
