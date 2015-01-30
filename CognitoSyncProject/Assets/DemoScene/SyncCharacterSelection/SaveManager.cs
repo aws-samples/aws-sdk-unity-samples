@@ -29,67 +29,88 @@ using Amazon.Common;
 public class SaveManager : MonoBehaviour
 {
 
-    private CognitoAWSCredentials credentials;
+	private CognitoAWSCredentials credentials;
     private CognitoSyncManager syncManager;
     private Dataset characters;
     string[] characterStrings = null;
 
-    bool initializationPending = false;
+    bool mergeInCourse = false;
 
-    /// <summary>
-    /// Inits Cognito Sync with FB-authenticated user credentials.
-    /// </summary>
-    /// <param name="fbAccessToken">The FB access token returned by the FB SDK.</param>
-    public void InitWithFacebook(string fbAccessToken)
+	public string IDENTITY_POOL_ID = "";
+	public RegionEndpoint ENDPOINT = RegionEndpoint.USEast1;
+
+	/// <summary>
+	/// Inits Cognito Sync with FB-authenticated user credentials.
+	/// </summary>
+	/// <param name="fbAccessToken">The FB access token returned by the FB SDK.</param>
+	public void InitWithFacebook(string fbAccessToken) 
+	{
+		try {
+			Init(fbAccessToken);
+		} catch (Exception ex) {
+			Debug.LogException (ex);
+			return;
+		}
+	}
+	
+	/// <summary>
+	/// Inits Cognito Sync with unauthenticated user credentials.
+	/// </summary>
+	public void InitWithoutFacebook()
+	{
+		try {
+			Init(null);
+		} catch (Exception ex) {
+			Debug.LogException (ex);
+			return;
+		}
+	}
+	
+    private void Init(string fbAccessToken)
     {
-        enabled = true;
+		enabled = true;
+		
+		if (string.IsNullOrEmpty(IDENTITY_POOL_ID))
+		{
+			throw new NotSupportedException ("Please setup your the identity pool id in SceneController");
+		}
+		
+		//Enabling Logs
+		AmazonLogging.EnableSDKLogging = true;
 
-        InitWithoutFacebook();
+		//Create a Credentials provider that uses Cognito Identity
+		credentials = new CognitoAWSCredentials(IDENTITY_POOL_ID, ENDPOINT);
 
-        if (fbAccessToken != null) {
-            credentials.IdentityProvider.Logins.Add ("graph.facebook.com", fbAccessToken);
-            credentials.IdentityProvider.RefreshAsync (RefreshCallback, null);
-            initializationPending = false;
-        } else {
-            initializationPending = true;
-        }
+		//If fbAccesToken is set, we can use Cognito's authenticated identities
+		if (fbAccessToken != null) {
+			credentials.AddLogin("graph.facebook.com", fbAccessToken);
+		}
+		
+		// DefaultCognitoSyncManager is a high level CognitoSync Client which handles all Sync operations at a Dataset level.
+		// Additionally, it also provides local storage of the Datasets which can be later Synchronized with the cloud(CognitoSync service)
+		// This feature allows the user to continue working without internet access and sync with CognitoSync whenever possible
+		syncManager = new DefaultCognitoSyncManager (credentials, new AmazonCognitoSyncConfig { RegionEndpoint = ENDPOINT });
+
+		InitializeCharactersDataset();
     }
+	
+	void InitializeCharactersDataset()
+	{
+		// Loading the datasets
+		characters = syncManager.OpenOrCreateDataset ("characters");
 
-    /// <summary>
-    /// Inits Cognito Sync with unauthenticated user credentials.
-    /// </summary>
-    public void InitWithoutFacebook()
-    {
-        enabled = true;
+		// when .Synchronize() is called the localDataset is merged with the remoteDataset
+		// OnDatasetDeleted, OnDatasetMerged, OnDatasetSuccess,  the corresponding callback is fired.
+		// The developer has the freedom of handling these events needed for the Dataset
+		characters.OnSyncSuccess += this.HandleSyncSuccess; // OnSyncSucess uses events/delegates pattern
+		characters.OnSyncFailure += this.HandleSyncFailure; // OnSyncFailure uses events/delegates pattern
+		characters.OnSyncConflict = this.HandleSyncConflict;
+		characters.OnDatasetMerged = this.HandleDatasetMerged;
+		characters.OnDatasetDeleted = this.HandleDatasetDeleted;
 
-        // Enabling Logs
-        //AmazonLogging.EnableSDKLogging = true;
-
-        // CognitoAWSCredentials is recommended in the place of Developer credentials{accessKey,secretKey} for reasons of security best practices
-        // CognitoAWSCredentials uses the CognitoIdentityProvider & provides temporary scoped AWS credentials from AssumeRoleWithWebIdentity
-        // ref: http://mobile.awsblog.com/post/TxR1UCU80YEJJZ/Using-the-Amazon-Cognito-Credentials-Provider
-
-        // Ref: http://docs.aws.amazon.com/mobile/sdkforandroid/developerguide/cognito-auth.html#create-an-identity-pool
-        // for setting up Cognito Identity Pools, can you use the sample code for .NET SDK
-        try {
-            credentials = new CachingCognitoAWSCredentials ();
-        } catch (Exception ex) {
-            Debug.LogException (ex);
-            return;
-        }
-        // DefaultCognitoSyncManager is a high level CognitoSync Client which handles all Sync operations at a Dataset level.
-        // Additionally, it also provides local storage of the Datasets which can be later Synchronized with the cloud(CognitoSync service)
-        // This feature allows the user to continue working w/o internet access and sync with CognitoSync whenever possible
-        syncManager = new DefaultCognitoSyncManager (credentials, new AmazonCognitoSyncConfig { RegionEndpoint = RegionEndpoint.USEast1 });
-
-        initializationPending = true;
-    }
-
-    void RefreshCallback (AmazonServiceResult result)
-    {
-        initializationPending = true;
-    }
-
+		LoadFromDataset ();
+	}
+		
     void OnGUI()
     {
         if (syncManager == null)
@@ -114,7 +135,12 @@ public class SaveManager : MonoBehaviour
             }
             else if (GUI.Button (new Rect (Screen.width-150*ratio, 30*ratio, 120*ratio, 30*ratio), "Logout"))
             {
-                FB.Logout();
+                
+				if (FB.IsLoggedIn) {
+					FB.Logout();
+					credentials.ClearCredentialsAndIdentity();
+					syncManager.WipeData();
+				}
                 Application.LoadLevel(Application.loadedLevel);
             }
         }
@@ -166,6 +192,11 @@ public class SaveManager : MonoBehaviour
 
     private void HandleSyncSuccess(object sender, SyncSuccessEvent e)
     {
+        if (mergeInCourse) {
+            Debug.Log ("Waiting for merge to complete to sync again");
+            return;
+        }
+
         var dataset = sender as Dataset;
         //Amazon.CognitoSync.SyncManager.Dataset dataset, List<Amazon.CognitoSync.SyncManager.Record> updatedRecords
         Debug.Log("Successfully synced for dataset : " + dataset.Metadata.DatasetName);
@@ -177,25 +208,6 @@ public class SaveManager : MonoBehaviour
 
     void Update()
     {
-        if (initializationPending)
-        {
-            // Loading the datasets
-            characters = syncManager.OpenOrCreateDataset ("characters");
-
-            // when ds.Synchronize() is called the localDataset is merged with the remoteDataset
-            // OnDatasetDeleted, OnDatasetMerged, OnDatasetSuccess,  the corresponding callback is fired.
-            // The developer has the freedom of handling these events needed for the Dataset
-            characters.OnSyncSuccess += this.HandleSyncSuccess; // OnSyncSucess uses events/delegates pattern
-            characters.OnSyncFailure += this.HandleSyncFailure; // OnSyncFailure uses events/delegates pattern
-            characters.OnSyncConflict = this.HandleSyncConflict;
-            characters.OnDatasetMerged = this.HandleDatasetMerged;
-            characters.OnDatasetDeleted = this.HandleDatasetDeleted;
-
-            LoadFromDataset ();
-
-            initializationPending = false;
-        }
-
         if (characterStrings != null)
         {
             CharacterList charList = GetComponent<CharacterList> ();
@@ -216,12 +228,54 @@ public class SaveManager : MonoBehaviour
         return true;
     }
 
-    private bool HandleDatasetMerged(Dataset dataset, List<string> datasetNames)
+    private bool HandleDatasetMerged(Dataset localDataset, List<string> mergedDatasetNames)
     {
-        Debug.Log(dataset + " Dataset has been merged");
+        if (mergeInCourse) {
+			Debug.Log ("Already in a merge");
+			return false;            
+        }
 
-        // returning true allows the Synchronize to resume and false cancels it
-        return true;
+		//This variable can be used to hold the game from actually starting
+        //and show a loading indicator to the user meanwhile
+        mergeInCourse = true;
+        
+        //Delete the merged datasets and just keep the local data
+        foreach (string name in mergedDatasetNames) {
+
+			Dataset mergedDataset = syncManager.OpenOrCreateDataset(name);
+            //Lambda function to delete the dataset after fetching it
+            EventHandler<SyncSuccessEvent> lambda;
+            Debug.Log ("fetching dataset to merge: " + name);
+            lambda = (object sender, SyncSuccessEvent e) => { 
+                //Actual merge code: We join the local characters and the remote characters into a new single dataset.
+                List<string> allCharacters = new List<string>();
+				ICollection<string> existingCharacters = localDataset.GetAll().Values;
+				ICollection<string> newCharacters = mergedDataset.GetAll().Values;
+                allCharacters.AddRange(existingCharacters);
+                allCharacters.AddRange(newCharacters);
+                int i = 0;
+                foreach (string characterString in allCharacters) {
+					localDataset.Put ((i++).ToString(), characterString);
+                }
+
+                Debug.Log ("deleting merged dataset: " + name);
+				mergedDataset.Delete(); //Delete the dataset locally
+				mergedDataset.OnSyncSuccess -= lambda; //We don't want this callback to be fired again
+				mergedDataset.OnSyncSuccess += (object s2, SyncSuccessEvent e2) => {
+                    Debug.Log ("merge comleted (dataset merged and deleted)");
+                    mergeInCourse = false;
+					localDataset.Synchronize(); //Continue the sync operation that was interrupted by the merge
+                };
+				mergedDataset.Synchronize(); //Synchronize it as deleted, failing to do so will leave us in an inconsistent state
+
+            };
+            
+			mergedDataset.OnSyncSuccess += lambda;
+			mergedDataset.Synchronize(); //Asnchronously fetch the dataset
+        }
+
+        // returning true allows the Synchronize to continue and false cancels it
+		return true;
     }
 
     private bool HandleSyncConflict(Amazon.CognitoSync.SyncManager.Dataset dataset, List<SyncConflict> conflicts)
