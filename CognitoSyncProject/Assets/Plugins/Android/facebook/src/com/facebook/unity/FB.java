@@ -17,6 +17,7 @@ import android.content.pm.PackageManager.NameNotFoundException;
 
 import com.facebook.*;
 import com.facebook.internal.Utility;
+import com.facebook.widget.FacebookDialog;
 import com.facebook.widget.WebDialog;
 import com.facebook.widget.WebDialog.OnCompleteListener;
 import com.unity3d.player.UnityPlayer;
@@ -273,48 +274,57 @@ public class FB {
         }
 
         final Bundle params = unity_params.getStringParams();
-        if (params.containsKey("callback_id")) {
-            params.remove("callback_id");
-        }
-
-        getUnityActivity().runOnUiThread(new Runnable() {
-
-            @Override
-            public void run() {
-                WebDialog feedDialog = (
-                        new WebDialog.FeedDialogBuilder(getUnityActivity(),
-                                Session.getActiveSession(),
-                                params))
-                        .setOnCompleteListener(new OnCompleteListener() {
-
-                            @Override
-                            public void onComplete(Bundle values,
-                                                   FacebookException error) {
-
-                                // response
-                                if (error == null) {
-                                    final String postID = values.getString("post_id");
-                                    if (postID != null) {
-                                        response.putID(postID);
-                                    } else {
-                                        response.putCancelled();
-                                    }
-                                    response.send();
-                                } else if (error instanceof FacebookOperationCanceledException) {
-                                    // User clicked the "x" button
-                                    response.putCancelled();
-                                    response.send();
-                                } else {
-                                    // Generic, ex: network error
-                                    response.sendError(error.toString());
-                                }
-                            }
-
-                        })
-                        .build();
-                feedDialog.show();
+                
+        if (!FacebookDialog.canPresentShareDialog(getUnityActivity()) || 
+            FBDialogUtils.hasUnsupportedParams(FBDialogUtils.DialogType.SHARE_DIALOG, params)) {
+            if (params.containsKey("callback_id")) {
+                params.remove("callback_id");
             }
-        });
+                
+            getUnityActivity().runOnUiThread(new Runnable() {
+
+                @Override
+                public void run() {
+                    WebDialog feedDialog = (
+                            new WebDialog.FeedDialogBuilder(getUnityActivity(),
+                                    Session.getActiveSession(),
+                                    params))
+                            .setOnCompleteListener(new OnCompleteListener() {
+        
+                                @Override
+                                public void onComplete(Bundle values,
+                                                       FacebookException error) {
+
+                                    // response
+                                    if (error == null) {
+                                        final String postID = values.getString("post_id");
+                                            if (postID != null) {
+                                                response.putID(postID);
+                                            } else {
+                                                response.putCancelled();
+                                            }
+                                            response.send();
+                                        } else if (error instanceof FacebookOperationCanceledException) {
+                                            // User clicked the "x" button
+                                            response.putCancelled();
+                                            response.send();
+                                        } else {
+                                            // Generic, ex: network error
+                                            response.sendError(error.toString());
+                                        }
+                                    }
+        
+                                })
+                                .build();
+                        feedDialog.show();
+                }
+            });
+        } else {
+	        Intent intent = new Intent(getUnityActivity(), FBUnityDialogsActivity.class);
+	        intent.putExtra(FBUnityDialogsActivity.DIALOG_TYPE, FBDialogUtils.DialogType.SHARE_DIALOG);
+	        intent.putExtra(FBUnityDialogsActivity.DIALOG_PARAMS, params);
+	        getUnityActivity().startActivity(intent);
+        }
     }
 
     @UnityCallable
@@ -376,11 +386,18 @@ public class FB {
                     parameters
             );
         } else if (unity_params.hasString("logEvent")) {
-            FB.getAppEventsLogger().logEvent(
-                    unity_params.getString("logEvent"),
-                    unity_params.getDouble("valueToSum"),
-                    parameters
-            );
+            if (unity_params.has("valueToSum")) {
+                FB.getAppEventsLogger().logEvent(
+                        unity_params.getString("logEvent"),
+                        unity_params.getDouble("valueToSum"),
+                        parameters
+                );
+            } else {
+                FB.getAppEventsLogger().logEvent(
+                        unity_params.getString("logEvent"),
+                        parameters
+                );
+            }
         } else {
             Log.e(TAG, "couldn't logPurchase or logEvent params: "+params);
         }

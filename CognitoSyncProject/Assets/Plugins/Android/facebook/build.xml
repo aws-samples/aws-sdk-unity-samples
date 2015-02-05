@@ -8,7 +8,7 @@
       <path id="project.all.jars.path.hacked">
               <path path="${toString:project.all.jars.path}"/>
               <path path="../../SDKPackage/Assets/Facebook/Editor/android/android-libs/android-support-v4.jar"/>
-              <path path="../../SDKPackage/Assets/Facebook/Editor/android/android-libs/bolts.jar"/>
+              <path path="../../SDKPackage/Assets/Facebook/Editor/android/android-libs/bolts-android-1.1.2.jar"/>
               <path path="../../SDKPackage/Assets/Facebook/Editor/android/android-libs/unity-classes.jar"/>
       </path>
 

@@ -20,23 +20,31 @@ import android.content.ContentResolver;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.content.pm.Signature;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Handler;
 import android.os.Looper;
+import android.util.Base64;
 import android.util.Log;
 import com.facebook.android.BuildConfig;
 import com.facebook.internal.AttributionIdentifiers;
 import com.facebook.internal.Utility;
-import com.facebook.model.GraphObject;
 import com.facebook.internal.Validate;
+import com.facebook.model.GraphObject;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.lang.reflect.Field;
-import java.util.*;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
@@ -58,6 +66,7 @@ public final class Settings {
     private static volatile String facebookDomain = FACEBOOK_COM;
     private static AtomicLong onProgressThreshold = new AtomicLong(65536);
     private static volatile boolean platformCompatibilityEnabled;
+    private static volatile boolean isDebugEnabled = BuildConfig.DEBUG;
 
     private static final int DEFAULT_CORE_POOL_SIZE = 5;
     private static final int DEFAULT_MAXIMUM_POOL_SIZE = 128;
@@ -96,6 +105,27 @@ public final class Settings {
      * metadata in the app's AndroidManifest.xml. The client token will be read from this key.
      */
     public static final String CLIENT_TOKEN_PROPERTY = "com.facebook.sdk.ClientToken";
+
+    private static Boolean sdkInitialized = false;
+
+    /**
+     * Initialize SDK
+     * This function will be called once in the application, it is tried to be called as early as possible;
+     * This is the place to register broadcast listeners.
+     */
+    public static synchronized void sdkInitialize(Context context) {
+        if (sdkInitialized == true) {
+          return;
+        }
+
+        // Make sure we've loaded default settings if we haven't already.
+        Settings.loadDefaultsFromMetadataIfNeeded(context);
+        // Load app settings from network so that dialog configs are available
+        Utility.loadAppSettingsAsync(context, Settings.getApplicationId());
+
+        BoltsMeasurementEventListener.getInstance(context.getApplicationContext());
+        sdkInitialized = true;
+    }
 
     /**
      * Certain logging behaviors are available for debugging beyond those that should be
@@ -165,8 +195,39 @@ public final class Settings {
      */
     public static final boolean isLoggingBehaviorEnabled(LoggingBehavior behavior) {
         synchronized (loggingBehaviors) {
-            return BuildConfig.DEBUG && loggingBehaviors.contains(behavior);
+            return Settings.isDebugEnabled() && loggingBehaviors.contains(behavior);
         }
+    }
+
+    /**
+     * This method is deprecated.  Use {@link Settings#isDebugEnabled()} instead.
+     */
+    @Deprecated
+    public static final boolean isLoggingEnabled() {
+        return isDebugEnabled();
+    }
+
+    /**
+     * This method is deprecated.  Use {@link Settings#setIsDebugEnabled(boolean)} instead.
+     */
+    @Deprecated
+    public static final void setIsLoggingEnabled(boolean enabled) {
+        setIsDebugEnabled(enabled);
+    }
+
+    /**
+     * Indicates if we are in debug mode.
+     */
+    public static final boolean isDebugEnabled() {
+        return isDebugEnabled;
+    }
+
+    /**
+     * Used to enable or disable logging, and other debug features. Defaults to BuildConfig.DEBUG.
+     * @param enabled Debug features (like logging) are enabled if true, disabled if false.
+     */
+    public static final void setIsDebugEnabled(boolean enabled) {
+        isDebugEnabled = enabled;
     }
 
     /**
@@ -255,37 +316,14 @@ public final class Settings {
         return (Executor) executorObject;
     }
 
-    /**
-     * Manually publish install attribution to the Facebook graph.  Internally handles tracking repeat calls to prevent
-     * multiple installs being published to the graph.
-     * @param context the current Context
-     * @param applicationId the fb application being published.
-     *
-     * This method is deprecated.  See {@link AppEventsLogger#activateApp(Context, String)} for more info.
-     */
-    @Deprecated
-    public static void publishInstallAsync(final Context context, final String applicationId) {
-       publishInstallAsync(context, applicationId, null);
-    }
-
-    /**
-     * Manually publish install attribution to the Facebook graph.  Internally handles tracking repeat calls to prevent
-     * multiple installs being published to the graph.
-     * @param context the current Context
-     * @param applicationId the fb application being published.
-     * @param callback a callback to invoke with a Response object, carrying the server response, or an error.
-     *
-     * This method is deprecated.  See {@link AppEventsLogger#activateApp(Context, String)} for more info.
-     */
-    @Deprecated
-    public static void publishInstallAsync(final Context context, final String applicationId,
+    static void publishInstallAsync(final Context context, final String applicationId,
         final Request.Callback callback) {
         // grab the application context ahead of time, since we will return to the caller immediately.
         final Context applicationContext = context.getApplicationContext();
         Settings.getExecutor().execute(new Runnable() {
             @Override
             public void run() {
-                final Response response = Settings.publishInstallAndWaitForResponse(applicationContext, applicationId);
+                final Response response = Settings.publishInstallAndWaitForResponse(applicationContext, applicationId, false);
                 if (callback != null) {
                     // invoke the callback on the main thread.
                     Handler handler = new Handler(Looper.getMainLooper());
@@ -322,36 +360,6 @@ public final class Settings {
     @Deprecated
     public static boolean getShouldAutoPublishInstall() {
         return shouldAutoPublishInstall;
-    }
-
-    /**
-     * Manually publish install attribution to the Facebook graph.  Internally handles tracking repeat calls to prevent
-     * multiple installs being published to the graph.
-     * @param context the current Context
-     * @param applicationId the fb application being published.
-     * @return returns false on error.  Applications should retry until true is returned.  Safe to call again after
-     * true is returned.
-     *
-     * This method is deprecated.  See {@link AppEventsLogger#activateApp(Context, String)} for more info.
-     */
-    @Deprecated
-    public static boolean publishInstallAndWait(final Context context, final String applicationId) {
-        Response response = publishInstallAndWaitForResponse(context, applicationId);
-        return response != null && response.getError() == null;
-    }
-
-    /**
-     * Manually publish install attribution to the Facebook graph.  Internally handles caching repeat calls to prevent
-     * multiple installs being published to the graph.
-     * @param context the current Context
-     * @param applicationId the fb application being published.
-     * @return returns a Response object, carrying the server response, or an error.
-     *
-     * This method is deprecated.  See {@link AppEventsLogger#activateApp(Context, String)} for more info.
-     */
-    @Deprecated
-    public static Response publishInstallAndWaitForResponse(final Context context, final String applicationId) {
-        return publishInstallAndWaitForResponse(context, applicationId, false);
     }
 
     static Response publishInstallAndWaitForResponse(
@@ -402,7 +410,8 @@ public final class Settings {
                 } else {
                     return new Response(null, null, null, graphObject, true);
                 }
-            } else if (identifiers.getAndroidAdvertiserId() == null && identifiers.getAttributionId() == null) {
+            } else if (identifiers == null ||
+                       (identifiers.getAndroidAdvertiserId() == null && identifiers.getAttributionId() == null)) {
                 throw new FacebookException("No attribution id available to send to server.");
             } else {
                 if (!Utility.queryAppSettings(applicationId, false).supportsAttribution()) {
@@ -421,7 +430,7 @@ public final class Settings {
                     publishResponse.getGraphObject().getInnerJSONObject() != null) {
                     editor.putString(jsonKey, publishResponse.getGraphObject().getInnerJSONObject().toString());
                 }
-                editor.commit();
+                editor.apply();
 
                 return publishResponse;
             }
@@ -501,10 +510,10 @@ public final class Settings {
      * @param context   Used to persist this value across app runs.
      */
     public static void setLimitEventAndDataUsage(Context context, boolean limitEventUsage) {
-        SharedPreferences preferences = context.getSharedPreferences(APP_EVENT_PREFERENCES, Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = preferences.edit();
-        editor.putBoolean("limitEventUsage", limitEventUsage);
-        editor.commit();
+        context.getSharedPreferences(APP_EVENT_PREFERENCES, Context.MODE_PRIVATE)
+            .edit()
+            .putBoolean("limitEventUsage", limitEventUsage)
+            .apply();
     }
 
     /**
@@ -582,6 +591,39 @@ public final class Settings {
         if (!defaultsLoaded) {
             loadDefaultsFromMetadata(context);
         }
+    }
+
+    public static String getApplicationSignature(Context context) {
+        if (context == null) {
+            return null;
+        }
+        PackageManager packageManager = context.getPackageManager();
+        if (packageManager == null) {
+            return null;
+        }
+
+        String packageName = context.getPackageName();
+        PackageInfo pInfo;
+        try {
+            pInfo = packageManager.getPackageInfo(packageName, PackageManager.GET_SIGNATURES);
+        } catch (PackageManager.NameNotFoundException e) {
+            return null;
+        }
+
+        Signature[] signatures = pInfo.signatures;
+        if (signatures == null || signatures.length == 0) {
+            return null;
+        }
+
+        MessageDigest md;
+        try {
+            md = MessageDigest.getInstance("SHA-1");
+        } catch (NoSuchAlgorithmException e) {
+            return null;
+        }
+
+        md.update(pInfo.signatures[0].toByteArray());
+        return Base64.encodeToString(md.digest(),  Base64.URL_SAFE | Base64.NO_PADDING);
     }
 
     /**

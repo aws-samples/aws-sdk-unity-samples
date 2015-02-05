@@ -52,8 +52,8 @@ public class FBLogin {
             Log.w(FB.TAG, "Session not found. Call init() before calling login()");
             return;
         }
-        // if the old session is closed, create new one
-        if (SessionState.CLOSED.equals(session.getState())) {
+        // if the old session is closed (or login was cancelled), create new one
+        if (session.isClosed()) {
             session = new Builder(FB.getUnityActivity()).setApplicationId(session.getApplicationId()).build();
             Session.setActiveSession(session);
         }

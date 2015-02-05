@@ -17,5 +17,5 @@
 package com.facebook;
 
 final class FacebookSdkVersion {
-    public static final String BUILD = "3.14.1/Unity.6.0.0";
+    public static final String BUILD = "3.20.0/Unity.6.2.1";
 }

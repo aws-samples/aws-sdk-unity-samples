@@ -408,7 +408,7 @@ public sealed class FB : ScriptableObject
             }
 
 #if !UNITY_WINRT
-#if UNITY_4_5
+#if UNITY_4_5 || UNITY_4_6 || UNITY_5_0
             var authTokenWww = new WWW(IntegratedPluginCanvasLocation.KeyUrl);
             yield return authTokenWww;
             if (authTokenWww.error != null)
