@@ -11,6 +11,7 @@
  
 using UnityEngine;
 using System.Collections;
+using UnityEngine.SocialPlatforms;
 
 /// <summary>
 /// Handles the login of FB-authenticated or unauthenticated users
@@ -18,43 +19,41 @@ using System.Collections;
 /// </summary>
 public class LoginController : MonoBehaviour {
 
-    private bool loggingIn = true;
+	[HideInInspector]
+    public bool loggingIn = false;
 
+#if !UNITY_WEBPLAYER
     private void Start () {
-        FB.Init(InitCallback);
+		loggingIn = true;
+		FB.Init(FacebookInitCallback);
     }
 
-    private void InitCallback()
+	private void FacebookInitCallback()
+	{
+		Debug.Log("FB Init completed" + FB.IsLoggedIn + "-" + FB.AccessToken);
+		if (FB.IsLoggedIn)
+		{
+			GetComponent<SaveManager> ().InitWithFacebook (FB.AccessToken);
+		}
+		else
+		{
+			loggingIn = false;
+		}
+	}
+
+    private void FacebookLoginCallback(FBResult result)
     {
-        if (FB.IsLoggedIn)
-        {
-            Debug.Log ("User was already logged in with FB");
-            OnLoggedIn ();
-        }
-        else
-        {
-            loggingIn = false;
-        }
+		Debug.Log("FB Login completed");
+		if (FB.IsLoggedIn)
+		{
+			GetComponent<SaveManager> ().InitWithFacebook (FB.AccessToken);
+		}
+		else
+		{
+			loggingIn = false;
+		}
     }
-
-    private void LoginCallback(FBResult result)
-    {
-        Debug.Log("FB.Login completed");
-
-        if (FB.IsLoggedIn)
-        {
-            OnLoggedIn ();
-        }
-        else
-        {
-            loggingIn = false;
-        }
-    }
-
-    private void OnLoggedIn()
-    {
-        GetComponent<SaveManager> ().InitWithFacebook (FB.AccessToken);
-    }
+#endif
 
     private void OnGUI()
     {
@@ -65,12 +64,16 @@ public class LoginController : MonoBehaviour {
             if (GUI.Button (new Rect (Screen.width / 2 - 80*ratio, Screen.height / 2 - 20*ratio, 160*ratio, 30*ratio), "Login with Facebook"))
             {
                 loggingIn = true;
-                FB.Login ("email", LoginCallback);
+#if !UNITY_WEBPLAYER
+                FB.Login ("email", FacebookLoginCallback);
+#else
+				Debug.LogError("Facebook is disabled when running in webplayer because it can only be used inside a Facebook app canvas.");
+#endif
             }
             if (GUI.Button (new Rect (Screen.width / 2 - 80*ratio, Screen.height / 2 + 20*ratio, 160*ratio, 30*ratio), "Skip authentication"))
             {
                 loggingIn = true;
-                GetComponent<SaveManager> ().InitWithoutFacebook ();
+                GetComponent<SaveManager> ().InitUnauth ();
             }
         }
     }
