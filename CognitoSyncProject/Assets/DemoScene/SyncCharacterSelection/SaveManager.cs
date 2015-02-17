@@ -26,6 +26,9 @@ using Amazon.Common;
 /// Contains the Cognito Sync related classes.
 /// Reads and stores a CharacterList to a Cognito Sync dataset.
 /// </summary>
+using Amazon.Unity;
+
+
 public class SaveManager : MonoBehaviour
 {
 
@@ -80,7 +83,7 @@ public class SaveManager : MonoBehaviour
         // DefaultCognitoSyncManager is a high level CognitoSync Client which handles all Sync operations at a Dataset level.
         // Additionally, it also provides local storage of the Datasets which can be later Synchronized with the cloud(CognitoSync service)
         // This feature allows the user to continue working w/o internet access and sync with CognitoSync whenever possible
-        syncManager = new DefaultCognitoSyncManager (credentials, new AmazonCognitoSyncConfig { RegionEndpoint = RegionEndpoint.USEast1 });
+		syncManager = new DefaultCognitoSyncManager (credentials, new AmazonCognitoSyncConfig { RegionEndpoint = AmazonInitializer.CognitoRegionEndpoint });
 
         initializationPending = true;
     }

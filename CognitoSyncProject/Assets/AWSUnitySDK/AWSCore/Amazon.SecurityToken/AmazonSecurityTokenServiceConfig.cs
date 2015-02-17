@@ -13,6 +13,7 @@
 using System;
 
 using Amazon.Runtime;
+using Amazon.Unity;
 
 
 namespace Amazon.SecurityToken
@@ -29,7 +30,7 @@ namespace Amazon.SecurityToken
         {
             this.AuthenticationServiceName = "sts";
             if (this.RegionEndpoint == null)
-                this.RegionEndpoint = RegionEndpoint.USEast1;
+				this.RegionEndpoint = AmazonInitializer.CognitoRegionEndpoint;
         }
 
         /// <summary>
