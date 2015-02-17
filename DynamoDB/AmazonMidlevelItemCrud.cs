@@ -19,19 +19,27 @@ using Amazon.DynamoDBv2;
 using Amazon.DynamoDBv2.DocumentModel;
 using Amazon.Runtime;
 using System.Threading;
+using Amazon.CognitoIdentity;
 
 class AmazonMidlevelItemCrud : MonoBehaviour
 {
-    private AmazonDynamoDBClient _client;
+    private AmazonDynamoDBClient client;
     private string tableName = "ProductCatalog";
     // The sample uses the following id PK value to add book item.
     private int sampleBookId = 555;
     
     private string displayMessage = "";
-    private Table _productCatalog;
+    private Table productCatalog;
+    
+    public string cognitoIdentityPoolId = "";
+    public Amazon.RegionEndpoint cognitoRegion;
+    public Amazon.RegionEndpoint ddbRegion;
+    
     void Start()
     {
-        _client = new AmazonDynamoDBClient(RegionEndpoint.USEast1);
+        cognitoRegion = Amazon.RegionEndpoint.USEast1;
+        ddbRegion = Amazon.RegionEndpoint.USEast1;
+        client = new AmazonDynamoDBClient(new CognitoAWSCredentials(cognitoIdentityPoolId, cognitoRegion), ddbRegion);
     }
     
     void OnGUI()
@@ -44,7 +52,7 @@ class AmazonMidlevelItemCrud : MonoBehaviour
         
         if (GUILayout.Button ("Load Table", GUILayout.MinHeight (Screen.height * 0.1f), GUILayout.Width (Screen.width * 0.4f)))
         {
-            _client = new AmazonDynamoDBClient(RegionEndpoint.USEast1);
+            client = new AmazonDynamoDBClient(RegionEndpoint.USEast1);
             this.LoadTable();
         }
         else if (GUILayout.Button ("Create Book", GUILayout.MinHeight (Screen.height * 0.1f), GUILayout.Width (Screen.width * 0.4f)))
@@ -88,7 +96,7 @@ class AmazonMidlevelItemCrud : MonoBehaviour
     private void LoadTable()
     {
         this.displayMessage += "\n***LoadTable***";
-        Table.LoadTableAsync(_client, tableName, 
+        Table.LoadTableAsync(client, tableName, 
                              (AmazonDynamoResult<Table> result) =>
         {
             if (result.Exception != null)
@@ -97,7 +105,7 @@ class AmazonMidlevelItemCrud : MonoBehaviour
                 Debug.LogException(result.Exception);
                 return;
             }
-            _productCatalog = result.Response;
+            productCatalog = result.Response;
             this.displayMessage += "\nLoadTable Success ";
         }, null);
     }
@@ -118,7 +126,7 @@ class AmazonMidlevelItemCrud : MonoBehaviour
         book["InStock"] = false;
         book["QuantityOnHand"] = 0;
         
-        _productCatalog.PutItemAsync(book, (AmazonDynamoResult<Document> result) =>
+        productCatalog.PutItemAsync(book, (AmazonDynamoResult<Document> result) =>
         {
             if (result.Exception != null)
             {
@@ -139,7 +147,7 @@ class AmazonMidlevelItemCrud : MonoBehaviour
             AttributesToGet = new List<string> { "Id", "ISBN", "Title", "Authors", "Price" },
             ConsistentRead = true
         };
-        _productCatalog.GetItemAsync(sampleBookId, config, 
+        productCatalog.GetItemAsync(sampleBookId, config, 
                                      (AmazonDynamoResult<Document> result) => 
         {
             if (result.Exception != null)
@@ -175,7 +183,7 @@ class AmazonMidlevelItemCrud : MonoBehaviour
             // Get updated item in response.
             ReturnValues = ReturnValues.AllNewAttributes
         };
-        _productCatalog.UpdateItemAsync(book, config, 
+        productCatalog.UpdateItemAsync(book, config, 
                                         (AmazonDynamoResult<Document> result) =>
         {
             if (result.Exception != null)
@@ -199,7 +207,7 @@ class AmazonMidlevelItemCrud : MonoBehaviour
             // Return the deleted item.
             ReturnValues = ReturnValues.AllOldAttributes
         };
-        _productCatalog.DeleteItemAsync(sampleBookId, config,
+        productCatalog.DeleteItemAsync(sampleBookId, config,
                                         (AmazonDynamoResult<Document> result) =>
         {
             if (result.Exception != null)
@@ -241,7 +249,7 @@ class AmazonMidlevelItemCrud : MonoBehaviour
             this.displayMessage += ("\n running in background thread");
             try
             {
-                Table productCatalog = Table.LoadTable(_client, "ProductCatalog");
+                Table productCatalog = Table.LoadTable(client, "ProductCatalog");
                 var batchWrite = productCatalog.CreateBatchWrite();
                 
                 var book1 = new Document();
@@ -279,7 +287,7 @@ class AmazonMidlevelItemCrud : MonoBehaviour
             this.displayMessage += ("\n running in background thread");
             try
             {
-                var batchWrite = _productCatalog.CreateBatchWrite();
+                var batchWrite = productCatalog.CreateBatchWrite();
                 
                 var book1 = new Document();
                 book1["Id"] = 9111;
@@ -293,7 +301,7 @@ class AmazonMidlevelItemCrud : MonoBehaviour
                 book1["QuantityOnHand"] = null; //Quantity is unknown at this time
                 batchWrite.AddDocumentToPut(book1);
                 // 1. Specify item to add in the Forum table.
-                Table reply = Table.LoadTable(_client, "Reply");
+                Table reply = Table.LoadTable(client, "Reply");
 
                 var replyBatchWrite = reply.CreateBatchWrite();
                 

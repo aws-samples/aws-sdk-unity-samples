@@ -17,7 +17,7 @@ using System.Collections.Generic;
 
 using Amazon.CognitoIdentity;
 using Amazon.Runtime;
-using Amazon.Unity;
+using Amazon.Unity3D;
 
 /// <summary>
 /// Simple example implementation for using BYOI 

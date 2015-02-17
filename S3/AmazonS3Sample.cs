@@ -18,7 +18,7 @@ using System.IO;
 using Amazon.CognitoIdentity;
 using Amazon.Runtime;
 using Amazon.S3.Util;
-using Amazon.Unity;
+using Amazon.Unity3D;
 using System.Net;
 using Amazon.Common;
 using System;
@@ -31,9 +31,21 @@ public class AmazonS3Sample : MonoBehaviour
     public string uploadSrcFilePath = "";
     public string downloadKey = "";
     public string bucketName = "";
+    public string cognitoIdentityPool = "";
+    public Amazon.RegionEndpoint cognitoRegion;
+    public Amazon.RegionEndpoint s3Region;
+    
     
     private AmazonS3Client _S3Client = null;
     private string runningResult = null;
+
+
+    void Start()
+    {
+        cognitoRegion = RegionEndpoint.USEast1;
+        s3Region = RegionEndpoint.USEast1;
+    }
+
 
     private AmazonS3Client S3Client
     {
@@ -41,7 +53,7 @@ public class AmazonS3Sample : MonoBehaviour
         {
             if(_S3Client == null)
             {
-                _S3Client = new AmazonS3Client (new CachingCognitoAWSCredentials (),RegionEndpoint.USEast1);
+                _S3Client = new AmazonS3Client (new CognitoAWSCredentials (cognitoIdentityPool,cognitoRegion),s3Region);
             }
             return _S3Client;
         }

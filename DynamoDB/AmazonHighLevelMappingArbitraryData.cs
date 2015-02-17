@@ -21,19 +21,32 @@ using Amazon.DynamoDBv2.Model;
 using Amazon.DynamoDBv2.DocumentModel;
 using Amazon.DynamoDBv2.DataModel;
 using System.Threading;
+using Amazon.CognitoIdentity;
 
 
 public class AmazonHighLevelMappingArbitraryData : MonoBehaviour
 {
     public AmazonHighLevelMappingArbitraryData()
     {
-        AmazonLogging.EnableSDKLogging = true;
     }
     
-    private AmazonDynamoDBClient _client;
-    private DynamoDBContext _context;
+    private AmazonDynamoDBClient client;
+    private DynamoDBContext context;
     private string displayMessage = "";
-    private Book _retrievedBook = null;
+    private Book retrievedBook = null;
+    
+    public string cognitoIdentityPoolId = "";
+    public Amazon.RegionEndpoint cognitoRegion;
+    public Amazon.RegionEndpoint ddbRegion;
+    
+    void Start()
+    {
+        AmazonLogging.EnableSDKLogging = true;
+        cognitoRegion = RegionEndpoint.USEast1;
+        ddbRegion = RegionEndpoint.USEast1;
+    }
+    
+    
     void OnGUI()
     {
         GUILayout.BeginArea (new Rect (0, 0, Screen.width * 0.5f, Screen.height));
@@ -43,8 +56,8 @@ public class AmazonHighLevelMappingArbitraryData : MonoBehaviour
         
         if (GUILayout.Button ("Create DynamoDBContext", GUILayout.MinHeight (Screen.height * 0.15f), GUILayout.Width (Screen.width * 0.4f)))
         {
-            _client = new AmazonDynamoDBClient(RegionEndpoint.USEast1);
-            _context = new DynamoDBContext(_client);
+            client = new AmazonDynamoDBClient(new CognitoAWSCredentials(cognitoIdentityPoolId, cognitoRegion), ddbRegion);
+            context = new DynamoDBContext(client);
             this.displayMessage = "DynamoDBContext created"; 
         }
         else if (GUILayout.Button ("Create Book", GUILayout.MinHeight (Screen.height * 0.1f), GUILayout.Width (Screen.width * 0.4f)))
@@ -101,7 +114,7 @@ public class AmazonHighLevelMappingArbitraryData : MonoBehaviour
         };
         
         
-        _context.SaveAsync<Book>(myBook, 
+        context.SaveAsync<Book>(myBook, 
                                 (AmazonDynamoResult<VoidResponse> result) =>
         {
             if (result.Exception != null)
@@ -118,7 +131,7 @@ public class AmazonHighLevelMappingArbitraryData : MonoBehaviour
     private void RetrieveBook()
     {
         this.displayMessage += "\n*** Load book**\n";
-        _context.LoadAsync<Book>(508, 
+        context.LoadAsync<Book>(508, 
                                  (AmazonDynamoResult<Book> result) =>
         {
             if (result.Exception != null)
@@ -128,18 +141,18 @@ public class AmazonHighLevelMappingArbitraryData : MonoBehaviour
                 Debug.LogException(result.Exception);
                 return;
             }
-            _retrievedBook = result.Response;
+            retrievedBook = result.Response;
             this.displayMessage += ("Retrieved Book: " +
-                                    "\nId=" + _retrievedBook.Id + 
-                                    "\nTitle=" + _retrievedBook.Title +
-                                    "\nISBN=" + _retrievedBook.ISBN);
+                                    "\nId=" + retrievedBook.Id + 
+                                    "\nTitle=" + retrievedBook.Title +
+                                    "\nISBN=" + retrievedBook.ISBN);
             string authors = "";
-            foreach(string author in _retrievedBook.BookAuthors)
+            foreach(string author in retrievedBook.BookAuthors)
                 authors += author + ",";
             this.displayMessage += "\nBookAuthor= "+ authors;
-            this.displayMessage += ("\nDimensions= "+ _retrievedBook.Dimensions.Length + " X " + 
-                                    _retrievedBook.Dimensions.Height + " X " +
-                                    _retrievedBook.Dimensions.Thickness);
+            this.displayMessage += ("\nDimensions= "+ retrievedBook.Dimensions.Length + " X " + 
+                                    retrievedBook.Dimensions.Height + " X " +
+                                    retrievedBook.Dimensions.Thickness);
 
         }, null);
     }
@@ -147,18 +160,18 @@ public class AmazonHighLevelMappingArbitraryData : MonoBehaviour
     private void UpdateBook()
     {
         this.displayMessage += "\n*** Update book**\n";
-        if (_retrievedBook == null)
+        if (retrievedBook == null)
         {
             this.displayMessage += "\nCan't UpdateBook() before RetrieveBook()";
             return;
         }
         // 3. Update property (book dimensions).
-        _retrievedBook.Dimensions.Height += 1;
-        _retrievedBook.Dimensions.Length += 1;
-        _retrievedBook.Dimensions.Thickness += 0.2M;
+        retrievedBook.Dimensions.Height += 1;
+        retrievedBook.Dimensions.Length += 1;
+        retrievedBook.Dimensions.Thickness += 0.2M;
         
         // Update the book.
-        _context.SaveAsync<Book>(_retrievedBook, (AmazonDynamoResult<VoidResponse> result) => 
+        context.SaveAsync<Book>(retrievedBook, (AmazonDynamoResult<VoidResponse> result) => 
         {
             if (result.Exception != null)
             {
@@ -166,20 +179,20 @@ public class AmazonHighLevelMappingArbitraryData : MonoBehaviour
                 Debug.LogException(result.Exception);
                 return;
             }
-            this.displayMessage += ("Update Book{" + _retrievedBook.Id + "} to DynamoDB Complete ! \n");
+            this.displayMessage += ("Update Book{" + retrievedBook.Id + "} to DynamoDB Complete ! \n");
         }, null);
     }
 
     private void DeleteBook()
     {
         this.displayMessage += "\n*** Delete book**\n";
-        if (_retrievedBook == null)
+        if (retrievedBook == null)
         {
             this.displayMessage += "\nCan't perform DeleteBook() before RetrieveBook()";
             return;
         }
         // Update the book.
-        _context.DeleteAsync<Book>(_retrievedBook, (AmazonDynamoResult<VoidResponse> result) => 
+        context.DeleteAsync<Book>(retrievedBook, (AmazonDynamoResult<VoidResponse> result) => 
         {
             if (result.Exception != null)
             {
@@ -187,7 +200,7 @@ public class AmazonHighLevelMappingArbitraryData : MonoBehaviour
                 Debug.LogException(result.Exception);
                 return;
             }
-            this.displayMessage += ("Delete Book{" + _retrievedBook.Id + "} from DynamoDB Complete ! \n");
+            this.displayMessage += ("Delete Book{" + retrievedBook.Id + "} from DynamoDB Complete ! \n");
         }, null);
     }
 
@@ -213,7 +226,7 @@ public class AmazonHighLevelMappingArbitraryData : MonoBehaviour
                     Title = "My book4 in batch write"
                 };
                 
-                var bookBatch = _context.CreateBatchWrite<Book>();
+                var bookBatch = context.CreateBatchWrite<Book>();
                 bookBatch.AddPutItems(new List<Book> { book1, book2 });
                 
                 this.displayMessage += ("Performing batch write in SingleTableBatchWrite().");

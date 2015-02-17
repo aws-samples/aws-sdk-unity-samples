@@ -23,7 +23,7 @@ using Amazon.CognitoIdentity;
 using Amazon.CognitoIdentity.Model;
 using Amazon.CognitoSync.SyncManager;
 using Amazon.Common;
-using Amazon.Unity;
+using Amazon.Unity3D;
 
 public class AmazonCognitoSyncManagerSample : MonoBehaviour
 {
@@ -43,7 +43,7 @@ public class AmazonCognitoSyncManagerSample : MonoBehaviour
     void Start()
     {
         // Enabling Logs
-        // AmazonLogging.EnableSDKLogging = true;
+        AmazonLogging.EnableSDKLogging = true;
 
         difficultyLevels = new string[] { "Expert", "Medium", "Easy" };
     
@@ -64,8 +64,8 @@ public class AmazonCognitoSyncManagerSample : MonoBehaviour
         playerSettings = syncManager.OpenOrCreateDataset("PlayerSettings");
 
         // fetching locally stored data
-        alias = string.IsNullOrEmpty(playerInfo.Get("alias")) ? "Enter ur alias" : playerInfo.Get("alias");
-        playerName = string.IsNullOrEmpty(playerInfo.Get("playerName")) ? "Enter ur fullName" : playerInfo.Get("playerName");
+        alias = string.IsNullOrEmpty(playerInfo.Get("alias")) ? "Enter your alias" : playerInfo.Get("alias");
+        playerName = string.IsNullOrEmpty(playerInfo.Get("playerName")) ? "Enter your full name" : playerInfo.Get("playerName");
 
         selectedDifficultyLevel = string.IsNullOrEmpty(playerSettings.Get("selectedDifficultyLevel")) ? 0 : int.Parse(playerSettings.Get("selectedDifficultyLevel"));
 
@@ -317,8 +317,9 @@ public class AmazonCognitoSyncManagerSample : MonoBehaviour
     private void HandleSyncFailure(object sender, SyncFailureEvent e)
     {
         var dataset = sender as Dataset;
-        Debug.Log("Sync failed for dataset : " + dataset.Metadata.DatasetName);
-        
+	    Debug.Log("Sync failed for dataset : " + dataset.Metadata.DatasetName);
+		Debug.LogException(e.Exception);
+
         statusMessage = "Syncing to CognitoSync Cloud failed !";
         disableButton = false;
     }

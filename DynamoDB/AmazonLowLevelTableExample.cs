@@ -16,22 +16,30 @@ using Amazon.DynamoDBv2;
 using Amazon.DynamoDBv2.Model;
 using Amazon.Runtime;
 using Amazon;
+using Amazon.CognitoIdentity;
+using Amazon.Common;
 
 namespace com.amazonaws.codesamples
 {
     class AmazonLowLevelTableExample : MonoBehaviour
     {
         private static AmazonDynamoDBClient client;
-
         private static string tableName = "ExampleTable";
-
         private string displayMessage = "";
 
+        public string cognitoIdentityPoolId = "";
+        public Amazon.RegionEndpoint cognitoRegion;
+        public Amazon.RegionEndpoint ddbRegion;
+        
         void Start()
         {
+            AmazonLogging.EnableSDKLogging = true;
+            cognitoRegion = Amazon.RegionEndpoint.USEast1;
+            ddbRegion = Amazon.RegionEndpoint.USEast1;
+            
             try
             {
-                client = new AmazonDynamoDBClient(RegionEndpoint.USEast1);
+                client = new AmazonDynamoDBClient(new CognitoAWSCredentials(cognitoIdentityPoolId, cognitoRegion), ddbRegion);
             }
             catch(Exception e)
             {

@@ -7,18 +7,25 @@ using Amazon;
 
 using UnityEngine;
 using System.Threading;
+using Amazon.CognitoIdentity;
 
 class AmazonMidLevelQueryAndScan : MonoBehaviour
 {
-    private AmazonDynamoDBClient _client;
-    private Table _replyTable;
+    private AmazonDynamoDBClient client;
+    private Table replyTable;
     private string displayMessage = "";
-    private string _forumName = "Amazon DynamoDB";
-    private string _threadSubject = "DynamoDB Thread 2";
-
+    private string forumName = "Amazon DynamoDB";
+    private string threadSubject = "DynamoDB Thread 2";
+    
+    public string cognitoIdentityPoolId = "";
+    public Amazon.RegionEndpoint cognitoRegion;
+    public Amazon.RegionEndpoint ddbRegion;
+    
     void Start()
     {
-        _client = new AmazonDynamoDBClient(RegionEndpoint.USEast1);
+        cognitoRegion = Amazon.RegionEndpoint.USEast1;
+        ddbRegion = Amazon.RegionEndpoint.USEast1;
+        client = new AmazonDynamoDBClient(new CognitoAWSCredentials(cognitoIdentityPoolId, cognitoRegion), ddbRegion);
     }
     
     void OnGUI()
@@ -43,19 +50,19 @@ class AmazonMidLevelQueryAndScan : MonoBehaviour
         }
         else if (GUILayout.Button ("FindRepliesInLast15Days", GUILayout.MinHeight (Screen.height * 0.15f), GUILayout.Width (Screen.width * 0.4f)))
         {
-            this.FindRepliesInLast15Days(_replyTable, _forumName, _threadSubject);
+            this.FindRepliesInLast15Days(replyTable, forumName, threadSubject);
         }
         else if (GUILayout.Button ("FindRepliesInLast15DaysWithConfig", GUILayout.MinHeight (Screen.height * 0.15f), GUILayout.Width (Screen.width * 0.4f)))
         {
-            this.FindRepliesInLast15DaysWithConfig(_replyTable, _forumName, _threadSubject);
+            this.FindRepliesInLast15DaysWithConfig(replyTable, forumName, threadSubject);
         }
         else if (GUILayout.Button ("FindRepliesWithNegativeVotes", GUILayout.MinHeight (Screen.height * 0.15f), GUILayout.Width (Screen.width * 0.4f)))
         {
-            this.FindRepliesWithNegativeVotes(_replyTable);
+            this.FindRepliesWithNegativeVotes(replyTable);
         }
         else if (GUILayout.Button ("FindRepliesWithNegativeVotesWithConfig", GUILayout.MinHeight (Screen.height * 0.15f), GUILayout.Width (Screen.width * 0.4f)))
         {
-            this.FindRepliesWithNegativeVotesWithConfig(_replyTable);
+            this.FindRepliesWithNegativeVotesWithConfig(replyTable);
         }
         GUILayout.EndArea ();
         
@@ -73,7 +80,7 @@ class AmazonMidLevelQueryAndScan : MonoBehaviour
     private void LoadTable()
     {
         this.displayMessage += "\n***LoadTable***";
-        Table.LoadTableAsync(_client, "Reply", 
+        Table.LoadTableAsync(client, "Reply", 
         (AmazonDynamoResult<Table> result) =>
         {
             if (result.Exception != null)
@@ -82,7 +89,7 @@ class AmazonMidLevelQueryAndScan : MonoBehaviour
                 Debug.LogException(result.Exception);
                 return;
             }
-            _replyTable = result.Response;
+            replyTable = result.Response;
             this.displayMessage += "\nLoadTable Success ";
         }, null);
     }
@@ -91,7 +98,7 @@ class AmazonMidLevelQueryAndScan : MonoBehaviour
     private void UploadSampleReplies()
     {
         this.displayMessage += "\n***FindRepliesWithNegativeVotes***\n";
-        if (_replyTable == null)
+        if (replyTable == null)
         {
             this.displayMessage += "\nLoad table before running scans";
             return;
@@ -109,7 +116,7 @@ class AmazonMidLevelQueryAndScan : MonoBehaviour
                 thread1Reply1["Message"] = "DynamoDB Thread 1 Reply 1 text";
                 thread1Reply1["PostedBy"] = "User A";
                 thread1Reply1["Votes"] = -2;
-                _replyTable.PutItem(thread1Reply1);
+                replyTable.PutItem(thread1Reply1);
                 
                 // Reply 2 - thread 1.
                 var thread1reply2 = new Document();
@@ -118,7 +125,7 @@ class AmazonMidLevelQueryAndScan : MonoBehaviour
                 thread1reply2["Message"] = "DynamoDB Thread 1 Reply 2 text";
                 thread1reply2["PostedBy"] = "User B";
                 thread1reply2["Votes"] = 5;
-                _replyTable.PutItem(thread1reply2);
+                replyTable.PutItem(thread1reply2);
                 
                 // Reply 3 - thread 1.
                 var thread1Reply3 = new Document();
@@ -127,7 +134,7 @@ class AmazonMidLevelQueryAndScan : MonoBehaviour
                 thread1Reply3["Message"] = "DynamoDB Thread 1 Reply 3 text";
                 thread1Reply3["PostedBy"] = "User B";
                 thread1Reply3["Votes"] = 2;
-                _replyTable.PutItem(thread1Reply3);
+                replyTable.PutItem(thread1Reply3);
                 
                 // Reply 1 - thread 2.
                 var thread2Reply1 = new Document();
@@ -137,7 +144,7 @@ class AmazonMidLevelQueryAndScan : MonoBehaviour
                 thread2Reply1["PostedBy"] = "User A";
                 thread2Reply1["Votes"] = -3;
                 
-                _replyTable.PutItem(thread2Reply1);
+                replyTable.PutItem(thread2Reply1);
                 
                 // Reply 2 - thread 2.
                 var thread2Reply2 = new Document();
@@ -146,7 +153,7 @@ class AmazonMidLevelQueryAndScan : MonoBehaviour
                 thread2Reply2["Message"] = "DynamoDB Thread 2 Reply 2 text";
                 thread2Reply2["PostedBy"] = "User A";
                 thread2Reply2["Votes"] = 0;
-                _replyTable.PutItem(thread2Reply2);
+                replyTable.PutItem(thread2Reply2);
                 this.displayMessage += "\nCompleted!";
             }
             catch(Exception ex)
@@ -161,7 +168,7 @@ class AmazonMidLevelQueryAndScan : MonoBehaviour
     {
         
         this.displayMessage += "\n***FindRepliesWithNegativeVotes***\n";
-        if (_replyTable == null)
+        if (replyTable == null)
         {
             this.displayMessage += "\nLoad table before running scans";
             return;
@@ -198,7 +205,7 @@ class AmazonMidLevelQueryAndScan : MonoBehaviour
     private void FindRepliesWithNegativeVotesWithConfig(Table productCatalogTable)
     {
         this.displayMessage = "***FindRepliesWithNegativeVotesWithConfig**\n";
-        if (_replyTable == null)
+        if (replyTable == null)
         {
             this.displayMessage += "\nLoad table before running scans";
             return;
@@ -242,7 +249,7 @@ class AmazonMidLevelQueryAndScan : MonoBehaviour
     private void FindRepliesInLast15Days(Table table, string forumName, string threadSubject)
     {
         this.displayMessage += "\n***FindRepliesInLast15Days***\n";
-        if (_replyTable == null)
+        if (replyTable == null)
         {
             this.displayMessage += "\nLoad table before running query";
             return;
@@ -284,7 +291,7 @@ class AmazonMidLevelQueryAndScan : MonoBehaviour
     private void FindRepliesPostedWithinTimePeriod(Table table, string forumName, string threadSubject)
     {
         this.displayMessage += "\n***FindRepliesPostedWithinTimePeriod***\n";
-        if (_replyTable == null)
+        if (replyTable == null)
         {
             this.displayMessage += "\nLoad table before running query";
             return;
@@ -340,7 +347,7 @@ class AmazonMidLevelQueryAndScan : MonoBehaviour
     private void FindRepliesInLast15DaysWithConfig(Table table, string forumName, string threadName)
     {
         this.displayMessage = "\n***FindRepliesInLast15DaysWithConfig***\n";
-        if (_replyTable == null)
+        if (replyTable == null)
         {
             this.displayMessage += "\nLoad table before running query";
             return;
