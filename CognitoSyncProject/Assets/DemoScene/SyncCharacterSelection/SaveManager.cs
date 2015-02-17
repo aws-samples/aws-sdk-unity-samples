@@ -28,6 +28,9 @@ using Amazon.Common;
 /// </summary>
 public class SaveManager : MonoBehaviour
 {
+	
+	public string IDENTITY_POOL_ID = "";
+	public RegionEndpoint ENDPOINT = RegionEndpoint.USEast1;
 
 	private CognitoAWSCredentials credentials;
     private CognitoSyncManager syncManager;
@@ -36,9 +39,6 @@ public class SaveManager : MonoBehaviour
 
     bool mergeInCourse = false;
 
-	public string IDENTITY_POOL_ID = "";
-	public RegionEndpoint ENDPOINT = RegionEndpoint.USEast1;
-
 	/// <summary>
 	/// Inits Cognito Sync with FB-authenticated user credentials.
 	/// </summary>
@@ -46,27 +46,28 @@ public class SaveManager : MonoBehaviour
 	public void InitWithFacebook(string fbAccessToken) 
 	{
 		try {
-			Init(fbAccessToken);
+			Init("graph.facebook.com", fbAccessToken);
 		} catch (Exception ex) {
 			Debug.LogException (ex);
 			return;
 		}
 	}
-	
+		
 	/// <summary>
 	/// Inits Cognito Sync with unauthenticated user credentials.
 	/// </summary>
-	public void InitWithoutFacebook()
+	public void InitUnauth()
 	{
+
 		try {
-			Init(null);
+			Init(null, null);
 		} catch (Exception ex) {
 			Debug.LogException (ex);
 			return;
 		}
 	}
 	
-    private void Init(string fbAccessToken)
+    private void Init(string authProvider, string accessToken)
     {
 		enabled = true;
 		
@@ -82,13 +83,10 @@ public class SaveManager : MonoBehaviour
 		credentials = new CognitoAWSCredentials(IDENTITY_POOL_ID, ENDPOINT);
 
 		//If fbAccesToken is set, we can use Cognito's authenticated identities
-		if (fbAccessToken != null) {
-			credentials.AddLogin("graph.facebook.com", fbAccessToken);
+		if (accessToken != null) {
+			credentials.AddLogin(authProvider, accessToken);
 		}
-		
-		// DefaultCognitoSyncManager is a high level CognitoSync Client which handles all Sync operations at a Dataset level.
-		// Additionally, it also provides local storage of the Datasets which can be later Synchronized with the cloud(CognitoSync service)
-		// This feature allows the user to continue working without internet access and sync with CognitoSync whenever possible
+
 		syncManager = new DefaultCognitoSyncManager (credentials, new AmazonCognitoSyncConfig { RegionEndpoint = ENDPOINT });
 
 		InitializeCharactersDataset();
@@ -113,16 +111,18 @@ public class SaveManager : MonoBehaviour
 		
     void OnGUI()
     {
+		float ratio = Screen.width/600.0f;
+		GUI.skin.label.fontSize = (int)(15*ratio);
+		GUI.skin.button.fontSize = (int)(15*ratio);
+
         if (syncManager == null)
         {
             GUILayout.Space(20);
-            GUILayout.Label("Please setup the Cognito credentials for the AWSPrefab in the scene");
+            GUILayout.Label("Please setup the Cognito credentials");
             return;
         }
 
-        float ratio = Screen.width/600.0f;
-        GUI.skin.label.fontSize = (int)(15*ratio);
-        GUI.skin.button.fontSize = (int)(15*ratio);
+
         if (GetComponent<CharacterList> ().enabled)
         {
             if (GUI.Button (new Rect (30*ratio, 30*ratio, 120*ratio, 30*ratio), "Save"))
@@ -135,22 +135,46 @@ public class SaveManager : MonoBehaviour
             }
             else if (GUI.Button (new Rect (Screen.width-150*ratio, 30*ratio, 120*ratio, 30*ratio), "Logout"))
             {
-                
-				if (FB.IsLoggedIn) {
-					FB.Logout();
+				if (credentials.IdentityProvider.Logins.Count > 0) { //Auth identity
+					if (FB.IsLoggedIn) {
+						FB.Logout();
+					}
 					credentials.ClearCredentialsAndIdentity();
 					syncManager.WipeData();
 				}
                 Application.LoadLevel(Application.loadedLevel);
             }
+			if (credentials.IdentityProvider.Logins.Count == 0) { //Unauth
+				if (GUI.Button (new Rect (Screen.width-150*ratio, 70*ratio, 120*ratio, 30*ratio), "Link with FB"))
+				{	
+					GetComponent<CharacterList> ().enabled = false;
+					FB.Login("email", FacebookLoginCallback);
+				}
+			}
         }
         else
         {
             GUI.Label(new Rect(30*ratio, 30*ratio, 120*ratio, 30*ratio), "Please wait...");
         }
 
+		GUI.Label(new Rect(20*ratio, Screen.height-50*ratio, 600*ratio, 30*ratio), "Identity: " + credentials.IdentityProvider.GetCurrentIdentityId());
+
     }
 
+	private void FacebookLoginCallback(FBResult result)
+	{
+		GetComponent<CharacterList> ().enabled = true;
+		if (FB.IsLoggedIn) {
+			credentials.AddLogin("graph.facebook.com", FB.AccessToken);
+			LoadFromDataset();
+		}
+	}
+/*
+	private void RefreshCallback(AmazonServiceResult result) 
+	{
+		GetComponent<CharacterList> ().enabled = true;
+	}
+*/
     private void LoadFromDataset()
     {
         GetComponent<CharacterList> ().enabled = false;
@@ -275,7 +299,7 @@ public class SaveManager : MonoBehaviour
         }
 
         // returning true allows the Synchronize to continue and false cancels it
-		return true;
+		return false;
     }
 
     private bool HandleSyncConflict(Amazon.CognitoSync.SyncManager.Dataset dataset, List<SyncConflict> conflicts)
@@ -297,6 +321,5 @@ public class SaveManager : MonoBehaviour
         var dataset = sender as Dataset;
         Debug.Log("Sync failed for dataset : " + dataset.Metadata.DatasetName);
     }
-
 
 }
