@@ -21,5 +21,11 @@ The S3 sample demonstrates the following:
 * Upload an object into the specified bucket
 * Download an object from the specified bucket
 
+## [Mobile Analytics Sample](https://github.com/awslabs/aws-sdk-unity-samples)
 
+The Mobile Analytics sample demonstrates the following:
 
+* How to integrate Mobile Analytics client with your app
+* Create and use custom event
+* Create and use monetization event
+* Record and send events to server

@@ -20,6 +20,7 @@ using Amazon.DynamoDBv2.DocumentModel;
 using Amazon.Runtime;
 using System.Threading;
 using Amazon.CognitoIdentity;
+using Amazon.Unity3D;
 
 class AmazonMidlevelItemCrud : MonoBehaviour
 {
@@ -32,14 +33,15 @@ class AmazonMidlevelItemCrud : MonoBehaviour
     private Table productCatalog;
     
     public string cognitoIdentityPoolId = "";
-    public Amazon.RegionEndpoint cognitoRegion;
-    public Amazon.RegionEndpoint ddbRegion;
+    public AWSRegion cognitoRegion = AWSRegion.USEast1;
+    public AWSRegion dynamoDBRegion = AWSRegion.USEast1;
     
     void Start()
     {
-        cognitoRegion = Amazon.RegionEndpoint.USEast1;
-        ddbRegion = Amazon.RegionEndpoint.USEast1;
-        client = new AmazonDynamoDBClient(new CognitoAWSCredentials(cognitoIdentityPoolId, cognitoRegion), ddbRegion);
+        // Set Unity SDK logging level
+        AmazonLogging.Level = AmazonLogging.LoggingLevel.DEBUG;
+        
+        client = new AmazonDynamoDBClient(new CognitoAWSCredentials(cognitoIdentityPoolId, cognitoRegion.GetRegionEndpoint()), dynamoDBRegion.GetRegionEndpoint());
     }
     
     void OnGUI()

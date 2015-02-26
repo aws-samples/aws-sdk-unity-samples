@@ -16,7 +16,6 @@ using Amazon.CognitoSync.SyncManager;
 using Amazon.CognitoSync;
 using Amazon.Unity3D;
 using Amazon.SecurityToken;
-using Amazon.Common;
 using Amazon.Runtime;
 
 public class CognitoSyncClientManager
