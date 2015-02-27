@@ -32,7 +32,7 @@ public class AmazonMobileAnalyticsSample : MonoBehaviour
     public string appId = "YourAppId";
     public string cognitoIdentityPoolId = "YourPoolId";
     public AWSRegion cognitoRegion = AWSRegion.USEast1;
-    public AWSRegion mobileAnalyticsRegion = AWSRegion.USEast1;
+    private AWSRegion mobileAnalyticsRegion = AWSRegion.USEast1;
 
     private AmazonMobileAnalyticsManager analyticsManager;
     
