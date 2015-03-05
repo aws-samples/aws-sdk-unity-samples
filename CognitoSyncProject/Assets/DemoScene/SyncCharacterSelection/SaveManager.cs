@@ -20,12 +20,14 @@ using Amazon.Runtime;
 using Amazon.CognitoIdentity;
 using Amazon.CognitoIdentity.Model;
 using Amazon.CognitoSync.SyncManager;
-using Amazon.Common;
 
 /// <summary>
 /// Contains the Cognito Sync related classes.
 /// Reads and stores a CharacterList to a Cognito Sync dataset.
 /// </summary>
+using Amazon.Unity3D;
+
+
 public class SaveManager : MonoBehaviour
 {
 	
@@ -75,9 +77,9 @@ public class SaveManager : MonoBehaviour
 		{
 			throw new NotSupportedException ("Please setup your the identity pool id in SceneController");
 		}
-		
-		//Enabling Logs
-		AmazonLogging.EnableSDKLogging = true;
+
+		//Enable Logs
+		AmazonLogging.Level = AmazonLogging.LoggingLevel.DEBUG;
 
 		//Create a Credentials provider that uses Cognito Identity
 		credentials = new CognitoAWSCredentials(IDENTITY_POOL_ID, ENDPOINT);

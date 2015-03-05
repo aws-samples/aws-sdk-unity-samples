@@ -20,8 +20,9 @@ using Amazon.Runtime;
 using Amazon.CognitoIdentity;
 using Amazon.CognitoIdentity.Model;
 using Amazon.CognitoSync.SyncManager;
-using Amazon.Common;
+
 using UnityEngine.SocialPlatforms;
+using Amazon.Unity3D;
 
 public class IdentityManager : MonoBehaviour
 {
@@ -165,7 +166,7 @@ public class IdentityManager : MonoBehaviour
 		}
 		
 		//Enable Logs
-		//AmazonLogging.EnableSDKLogging = true;
+		AmazonLogging.Level = AmazonLogging.LoggingLevel.DEBUG;
 
 		//Create a Credentials provider that uses Cognito Identity
 		credentials = new CognitoAWSCredentials(IDENTITY_POOL_ID, ENDPOINT);
