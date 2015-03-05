@@ -22,7 +22,6 @@ using Amazon.Runtime;
 using Amazon.CognitoIdentity;
 using Amazon.CognitoIdentity.Model;
 using Amazon.CognitoSync.SyncManager;
-using Amazon.Common;
 using Amazon.Unity3D;
 
 public class AmazonCognitoSyncManagerSample : MonoBehaviour
@@ -42,8 +41,8 @@ public class AmazonCognitoSyncManagerSample : MonoBehaviour
     // Use this for initialization
     void Start()
     {
-        // Enabling Logs
-        AmazonLogging.EnableSDKLogging = true;
+        // Set Unity SDK logging level
+        AmazonLogging.Level = AmazonLogging.LoggingLevel.DEBUG;
 
         difficultyLevels = new string[] { "Expert", "Medium", "Easy" };
     

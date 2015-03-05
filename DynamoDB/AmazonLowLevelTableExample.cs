@@ -17,7 +17,7 @@ using Amazon.DynamoDBv2.Model;
 using Amazon.Runtime;
 using Amazon;
 using Amazon.CognitoIdentity;
-using Amazon.Common;
+using Amazon.Unity3D;
 
 namespace com.amazonaws.codesamples
 {
@@ -28,18 +28,17 @@ namespace com.amazonaws.codesamples
         private string displayMessage = "";
 
         public string cognitoIdentityPoolId = "";
-        public Amazon.RegionEndpoint cognitoRegion;
-        public Amazon.RegionEndpoint ddbRegion;
+        public AWSRegion cognitoRegion = AWSRegion.USEast1;
+        public AWSRegion dynamoDBRegion = AWSRegion.USEast1;
         
         void Start()
         {
-            AmazonLogging.EnableSDKLogging = true;
-            cognitoRegion = Amazon.RegionEndpoint.USEast1;
-            ddbRegion = Amazon.RegionEndpoint.USEast1;
+            // Set Unity SDK logging level
+            AmazonLogging.Level = AmazonLogging.LoggingLevel.DEBUG;
             
             try
             {
-                client = new AmazonDynamoDBClient(new CognitoAWSCredentials(cognitoIdentityPoolId, cognitoRegion), ddbRegion);
+                client = new AmazonDynamoDBClient(new CognitoAWSCredentials(cognitoIdentityPoolId, cognitoRegion.GetRegionEndpoint()), dynamoDBRegion.GetRegionEndpoint());
             }
             catch(Exception e)
             {

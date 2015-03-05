@@ -8,6 +8,7 @@ using Amazon;
 using UnityEngine;
 using System.Threading;
 using Amazon.CognitoIdentity;
+using Amazon.Unity3D;
 
 class AmazonMidLevelQueryAndScan : MonoBehaviour
 {
@@ -17,15 +18,17 @@ class AmazonMidLevelQueryAndScan : MonoBehaviour
     private string forumName = "Amazon DynamoDB";
     private string threadSubject = "DynamoDB Thread 2";
     
-    public string cognitoIdentityPoolId = "";
-    public Amazon.RegionEndpoint cognitoRegion;
-    public Amazon.RegionEndpoint ddbRegion;
+    public string cognitoIdentityPoolId = "YourIdentityPoolId";
+    public AWSRegion cognitoRegion = AWSRegion.USEast1;
+    public AWSRegion dynamoDBRegion = AWSRegion.USEast1;
     
     void Start()
     {
-        cognitoRegion = Amazon.RegionEndpoint.USEast1;
-        ddbRegion = Amazon.RegionEndpoint.USEast1;
-        client = new AmazonDynamoDBClient(new CognitoAWSCredentials(cognitoIdentityPoolId, cognitoRegion), ddbRegion);
+        // Set Unity SDK logging level
+        AmazonLogging.Level = AmazonLogging.LoggingLevel.DEBUG;
+        
+        
+        client = new AmazonDynamoDBClient(new CognitoAWSCredentials(cognitoIdentityPoolId,cognitoRegion.GetRegionEndpoint()), dynamoDBRegion.GetRegionEndpoint());
     }
     
     void OnGUI()

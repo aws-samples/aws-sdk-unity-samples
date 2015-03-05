@@ -14,7 +14,7 @@ using UnityEngine;
 using System.Collections.Generic;
 
 using Amazon;
-using Amazon.Common;
+using Amazon.Unity3D;
 using Amazon.Runtime;
 using Amazon.DynamoDBv2;
 using Amazon.DynamoDBv2.Model;             
@@ -36,14 +36,13 @@ public class AmazonHighLevelMappingArbitraryData : MonoBehaviour
     private Book retrievedBook = null;
     
     public string cognitoIdentityPoolId = "";
-    public Amazon.RegionEndpoint cognitoRegion;
-    public Amazon.RegionEndpoint ddbRegion;
+    public AWSRegion cognitoRegion = AWSRegion.USEast1;
+    public AWSRegion dynamoDBRegion = AWSRegion.USEast1;
     
     void Start()
     {
-        AmazonLogging.EnableSDKLogging = true;
-        cognitoRegion = RegionEndpoint.USEast1;
-        ddbRegion = RegionEndpoint.USEast1;
+        // Set Unity SDK logging level
+        AmazonLogging.Level = AmazonLogging.LoggingLevel.DEBUG;
     }
     
     
@@ -56,7 +55,7 @@ public class AmazonHighLevelMappingArbitraryData : MonoBehaviour
         
         if (GUILayout.Button ("Create DynamoDBContext", GUILayout.MinHeight (Screen.height * 0.15f), GUILayout.Width (Screen.width * 0.4f)))
         {
-            client = new AmazonDynamoDBClient(new CognitoAWSCredentials(cognitoIdentityPoolId, cognitoRegion), ddbRegion);
+            client = new AmazonDynamoDBClient(new CognitoAWSCredentials(cognitoIdentityPoolId, cognitoRegion.GetRegionEndpoint()), dynamoDBRegion.GetRegionEndpoint());
             context = new DynamoDBContext(client);
             this.displayMessage = "DynamoDBContext created"; 
         }
