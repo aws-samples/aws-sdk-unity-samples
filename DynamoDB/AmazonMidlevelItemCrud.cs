@@ -54,7 +54,6 @@ class AmazonMidlevelItemCrud : MonoBehaviour
         
         if (GUILayout.Button ("Load Table", GUILayout.MinHeight (Screen.height * 0.1f), GUILayout.Width (Screen.width * 0.4f)))
         {
-            client = new AmazonDynamoDBClient(RegionEndpoint.USEast1);
             this.LoadTable();
         }
         else if (GUILayout.Button ("Create Book", GUILayout.MinHeight (Screen.height * 0.1f), GUILayout.Width (Screen.width * 0.4f)))
