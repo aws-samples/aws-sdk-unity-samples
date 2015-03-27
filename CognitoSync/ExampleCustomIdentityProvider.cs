@@ -43,11 +43,11 @@ public class ExampleCustomIdentityProvider : AbstractCognitoIdentityProvider
             /// http://mobile.awsblog.com/post/Tx1YVAQ4NZKBWF5/Amazon-Cognito-Announcing-Developer-Authenticated-Identities
 			/// AmazonMainThreadDispatcher.ExecCoroutine() can be useful in case you have to want
 			/// to yield on a WWW request: AmazonMainThreadDispatcher.ExecCoroutine(ContactWebBackend(callback)); 
-            _identityId = "retrievedIdentityID";
+
             _token = "retrivedDeveloperToken";
-            
             Logins[getProviderName()] = _token;
-            UpdateIdentity(_identityId);
+            UpdateIdentity("retrievedIdentityID");
+
             AmazonMainThreadDispatcher.ExecCallback(callback, new AmazonServiceResult(null, null, null, state));
         }
         catch (Exception ex)
