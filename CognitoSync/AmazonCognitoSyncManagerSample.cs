@@ -227,7 +227,7 @@ public class AmazonCognitoSyncManagerSample : MonoBehaviour
 
             // please make a note of the FB.AccessTokenExpiresAt and refresh it before it expires
             // cognito auth will fail if the FB.AccessToken is expired
-            CognitoSyncClientManager.CognitoAWSCredentialsInstance.IdentityProvider.RefreshAsync(AuthenticationCallback, "Facebook Login");
+            CognitoSyncClientManager.CognitoAWSCredentialsInstance.AddLogin("graph.facebook.com", FB.AccessToken);
         }
         
     }
