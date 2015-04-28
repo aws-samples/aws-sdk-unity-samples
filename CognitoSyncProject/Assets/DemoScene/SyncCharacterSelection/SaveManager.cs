@@ -186,6 +186,10 @@ public class SaveManager : MonoBehaviour
 
     }
 
+	private String indexToKey(int index) {
+		return index.ToString("00000");
+	}
+
     private void SaveToDataset()
     {
         CharacterList charList = GetComponent<CharacterList> ();
@@ -193,11 +197,11 @@ public class SaveManager : MonoBehaviour
         int i = 0;
         foreach (string s in characterStrings)
         {
-            characters.Put ((i++).ToString(), s);
+			characters.Put (indexToKey(i++), s);
         }
-        while (characters.Get(i.ToString()) != null)
+		while (characters.Get(indexToKey(i)) != null)
         {
-            characters.Remove((i++).ToString());
+			characters.Remove(indexToKey(i++));
         }
         GetComponent<CharacterList> ().enabled = false;
         characters.Synchronize();
@@ -256,8 +260,10 @@ public class SaveManager : MonoBehaviour
 
     private bool HandleDatasetMerged(Dataset localDataset, List<string> mergedDatasetNames)
     {
+		Debug.LogWarning("Sync merge");
+
         if (mergeInCourse) {
-			Debug.Log ("Already in a merge");
+			Debug.LogWarning ("Already in a merge");
 			return false;            
         }
 
@@ -281,7 +287,7 @@ public class SaveManager : MonoBehaviour
                 allCharacters.AddRange(newCharacters);
                 int i = 0;
                 foreach (string characterString in allCharacters) {
-					localDataset.Put ((i++).ToString(), characterString);
+					localDataset.Put (indexToKey(i++), characterString);
                 }
 
                 Debug.Log ("deleting merged dataset: " + name);
@@ -301,11 +307,12 @@ public class SaveManager : MonoBehaviour
         }
 
         // returning true allows the Synchronize to continue and false cancels it
-		return false;
+		return true;
     }
 
     private bool HandleSyncConflict(Amazon.CognitoSync.SyncManager.Dataset dataset, List<SyncConflict> conflicts)
     {
+		Debug.LogWarning("Sync conflict " + dataset.Metadata.DatasetName);
         List<Amazon.CognitoSync.SyncManager.Record> resolvedRecords = new List<Amazon.CognitoSync.SyncManager.Record>();
         foreach (SyncConflict conflictRecord in conflicts)
         {
