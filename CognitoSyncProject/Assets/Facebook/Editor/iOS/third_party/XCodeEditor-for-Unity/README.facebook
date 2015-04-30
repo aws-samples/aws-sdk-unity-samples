@@ -1,6 +1,0 @@
-Project: XCodeEditor-for-Unity
-Release date: 11-05-2012
-Website: https://github.com/dcariola/XCodeEditor-for-Unity/commits/master
-License: MIT
-Description: XCodeEditor lets you read, modify and write Xcode pbxproj files.
-Changes: Removed a dependency on a non open source json library, added pretty printing, fixed several bugs

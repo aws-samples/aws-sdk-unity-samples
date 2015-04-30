@@ -1,46 +1,34 @@
-﻿/*
- * Copyright 2014-2014 Amazon.com, Inc. or its affiliates. All Rights Reserved.
- *
- *
- * Licensed under the AWS Mobile SDK for Unity Developer Preview License Agreement (the "License").
- * You may not use this file except in compliance with the License.
- * A copy of the License is located in the "license" file accompanying this file.
- * See the License for the specific language governing permissions and limitations under the License.
- *
- */
+﻿//
+// Copyright 2014-2015 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+//
+//
+// Licensed under the AWS Mobile SDK for Unity Developer Preview License Agreement (the "License").
+// You may not use this file except in compliance with the License.
+// A copy of the License is located in the "license" file accompanying this file.
+// See the License for the specific language governing permissions and limitations under the License.
+//
+//
 
-
-using System;
-using System.Collections;
-using Amazon;
-using Amazon.MobileAnalyticsManager.Event;
-using Amazon.MobileAnalyticsManager;
-using Amazon.MobileAnalyticsManager.ClientContext;
-using Amazon.MobileAnalyticsManager.Delivery;
-using Amazon.Unity3D;
-using Amazon.Runtime;
+using Amazon.MobileAnalytics.MobileAnalyticsManager;
 using Amazon.CognitoIdentity;
-using System.Collections.Generic;
-using System.Text;
-﻿using UnityEngine;
+using Amazon.Util;﻿
+using Amazon.Util.Internal;﻿
+using Amazon.Runtime;
+using UnityEngine;
+using AWSSDK.Examples;
 
-public class AmazonMobileAnalyticsSample : MonoBehaviour
+public class AmazonMobileAnalyticsSample : BaseSample
 {
     
     bool started = false;
     
     public string appId = "YourAppId";
     public string cognitoIdentityPoolId = "YourPoolId";
-    public AWSRegion cognitoRegion = AWSRegion.USEast1;
-    private AWSRegion mobileAnalyticsRegion = AWSRegion.USEast1;
-
-    private AmazonMobileAnalyticsManager analyticsManager;
+    private MobileAnalyticsManager analyticsManager;
     
     // Use this for initialization
     void Start()
     {
-        // Set Unity SDK logging level
-        AmazonLogging.Level = AmazonLogging.LoggingLevel.DEBUG;
 
 #if UNITY_EDITOR
         /// This is just to spoof the application to think that its running on iOS platform
@@ -55,9 +43,9 @@ public class AmazonMobileAnalyticsSample : MonoBehaviour
         AmazonHookedPlatformInfo.Instance.VersionCode = "1.0";
         AmazonHookedPlatformInfo.Instance.PackageName = "com.yourcompany.yourapp";
 #endif
-        
-        analyticsManager = AmazonMobileAnalyticsManager.GetOrCreateInstance(new CognitoAWSCredentials(cognitoIdentityPoolId, cognitoRegion.GetRegionEndpoint()),
-                                                                            mobileAnalyticsRegion.GetRegionEndpoint(),appId);
+
+        analyticsManager = MobileAnalyticsManager.GetOrCreateInstance((CognitoAWSCredentials)GetCredentials(CredentialsType.Cognito),
+                                                                            Amazon.RegionEndpoint.USEast1, appId);
         started = true;
     }
 
@@ -70,7 +58,7 @@ public class AmazonMobileAnalyticsSample : MonoBehaviour
         // record custom event
         if (GUILayout.Button ("Record Custom Event", GUILayout.MinHeight (Screen.height * 0.2f), GUILayout.Width (Screen.width * 0.4f)))
         {
-            AmazonMobileAnalyticsEvent customEvent = new AmazonMobileAnalyticsEvent("level_complete");
+            CustomEvent customEvent = new CustomEvent("level_complete");
             
             customEvent.AddAttribute("LevelName","Level1");
             customEvent.AddAttribute("CharacterClass","Warrior");
@@ -84,7 +72,7 @@ public class AmazonMobileAnalyticsSample : MonoBehaviour
         // record monetization event
         if (GUILayout.Button ("Record Monetization Event", GUILayout.MinHeight (Screen.height * 0.2f), GUILayout.Width (Screen.width * 0.4f)))
         {
-            AmazonMobileAnalyticsMonetizationEvent monetizationEvent = new AmazonMobileAnalyticsMonetizationEvent();
+            MonetizationEvent monetizationEvent = new MonetizationEvent();
             
             monetizationEvent.Quantity = 3.0;
             monetizationEvent.ItemPrice = 1.99;
@@ -102,11 +90,11 @@ public class AmazonMobileAnalyticsSample : MonoBehaviour
     
     }
 
-    void OnApplicationFocus(bool focus) 
+    void OnApplicationFocus(bool focus)
     {
-        if(started)
+        if (started)
         {
-            if(focus)
+            if (focus)
             {
                 analyticsManager.ResumeSession();
             }

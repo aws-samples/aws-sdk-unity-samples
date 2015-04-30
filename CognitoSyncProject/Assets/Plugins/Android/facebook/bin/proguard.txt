@@ -1,3 +1,0 @@
-# view res/layout/com_facebook_usersettingsfragment.xml #generated:48
--keep class com.facebook.widget.LoginButton { <init>(...); }
-
