@@ -30,8 +30,8 @@ public class SaveManager : MonoBehaviour
 
 	private CognitoAWSCredentials credentials;
     private CognitoSyncManager syncManager;
-    private Dataset characters;
-    string[] characterStrings = null;
+
+	private Dataset characters;
 
     bool mergeInCourse = false;
 
@@ -138,7 +138,7 @@ public class SaveManager : MonoBehaviour
 			if (credentials.CurrentLoginProviders.Length == 0) { //Unauth
 				if (GUI.Button (new Rect (Screen.width-150*ratio, 70*ratio, 120*ratio, 30*ratio), "Link with FB"))
 				{	
-					GetComponent<CharacterList> ().enabled = false;
+					GetComponent<CharacterList> ().enabled = false; //Disable GUI
 					FB.Login("email", FacebookLoginCallback);
 				}
 			}
@@ -154,7 +154,7 @@ public class SaveManager : MonoBehaviour
 
 	private void FacebookLoginCallback(FBResult result)
 	{
-		GetComponent<CharacterList> ().enabled = true;
+		GetComponent<CharacterList> ().enabled = true; //Enable GUI
 		if (FB.IsLoggedIn) {
 			credentials.AddLogin("graph.facebook.com", FB.AccessToken);
 			LoadFromDataset();
@@ -163,11 +163,9 @@ public class SaveManager : MonoBehaviour
 
 	private void LoadFromDataset()
     {
-        GetComponent<CharacterList> ().enabled = false;
-        // Remote DatasetMetadata is fetched and stored in SQLiteStorage
-        // Records are not fetched until ds.Synchronize() is called on the respective datasets
-        syncManager.RefreshDatasetMetadataAsync(RefreshDatasetMetadataCallback, null);
+		GetComponent<CharacterList> ().enabled = false; //Disable GUI
 
+		characters.Synchronize();
     }
 
 	private String indexToKey(int index) {
@@ -175,7 +173,10 @@ public class SaveManager : MonoBehaviour
 	}
 
     private void SaveToDataset()
-    {
+	{
+		GetComponent<CharacterList> ().enabled = false; //Disable GUI
+
+		//Store data from the scene into the dataset
         CharacterList charList = GetComponent<CharacterList> ();
         string[] characterStrings = charList.SerializeCharacters ();
         int i = 0;
@@ -187,21 +188,8 @@ public class SaveManager : MonoBehaviour
         {
 			characters.Remove(indexToKey(i++));
         }
-        GetComponent<CharacterList> ().enabled = false;
-        characters.Synchronize();
-    }
 
-	private void RefreshDatasetMetadataCallback(AmazonCognitoSyncResult<List<DatasetMetadata>> result)
-    {
-        if (result.Exception == null)
-        {
-            characters.Synchronize();
-            Debug.Log("RefreshDatasetMetadataAsync complete");
-        }
-        else
-        {
-            Debug.LogException(result.Exception);
-        }
+        characters.Synchronize();
     }
 
     private void HandleSyncSuccess(object sender, SyncSuccessEvent e)
@@ -219,20 +207,15 @@ public class SaveManager : MonoBehaviour
 			Debug.Log("Successfully synced dataset");
 		}
 
-        IDictionary<string, string> dic = dataset.GetAll ();
-        characterStrings = new string[dic.Count];
-        dic.Values.CopyTo(characterStrings,0);
-    }
 
-    void Update()
-    {
-        if (characterStrings != null)
-        {
-            CharacterList charList = GetComponent<CharacterList> ();
-            charList.DeserializeCharacters (characterStrings);
-            characterStrings = null;
-            charList.enabled = true;
-        }
+        IDictionary<string, string> dic = dataset.GetAll ();
+        string[] characterStrings = new string[dic.Count];
+        dic.Values.CopyTo(characterStrings, 0);
+
+		CharacterList charList = GetComponent<CharacterList> ();
+		charList.DeserializeCharacters (characterStrings);
+
+		GetComponent<CharacterList> ().enabled = true; //Enable GUI
     }
 
     private bool HandleDatasetDeleted(Dataset dataset)
