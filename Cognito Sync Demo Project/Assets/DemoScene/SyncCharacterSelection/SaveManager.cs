@@ -207,6 +207,13 @@ public class SaveManager : MonoBehaviour
 			Debug.Log("Successfully synced dataset");
 		}
 
+		//Note: Cleanup added for compatibility with datasets created with old versions of the sample
+		foreach (string key in dataset.GetAll().Keys)
+		{
+			if (key.Length < 3) {
+				dataset.Remove(key);
+			}
+		}
 
         IDictionary<string, string> dic = dataset.GetAll ();
         string[] characterStrings = new string[dic.Count];
