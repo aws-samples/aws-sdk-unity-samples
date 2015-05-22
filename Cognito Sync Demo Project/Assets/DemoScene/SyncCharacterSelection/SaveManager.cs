@@ -315,7 +315,8 @@ public class SaveManager : MonoBehaviour
     private void HandleSyncFailure(object sender, SyncFailureEvent e)
     {
         var dataset = sender as Dataset;
-        Debug.Log("Sync failed for dataset : " + dataset.Metadata.DatasetName);
+        Debug.LogError("Sync failed for dataset '" + dataset.Metadata.DatasetName + "'");
+        Debug.LogError(e.Exception.GetType() + ": " + e.Exception.Message);
     }
 
 }
