@@ -255,7 +255,7 @@ public class SaveManager : MonoBehaviour
 			Dataset mergedDataset = syncManager.OpenOrCreateDataset(name);
 			//mergedDataset.Delete(); //Remove any data we could have from a previous execution of this handler
             //Lambda function to delete the dataset after fetching it
-            EventHandler<SyncSuccessEvent> lambda;
+            EventHandler<SyncSuccessEvent> lambda =null;
             Debug.Log ("fetching dataset to merge: " + name);
             lambda = (object sender, SyncSuccessEvent e) => { 
                 //Actual merge code: We join the local characters and the remote characters into a new single dataset.
