@@ -29,7 +29,7 @@ public class SaveManager : MonoBehaviour
 	public RegionEndpoint ENDPOINT = RegionEndpoint.USEast1;
 
 	private CognitoAWSCredentials credentials;
-    private CognitoSyncManager syncManager;
+    private CognitoSyncManager syncManager, syncManager2;
 
 	private Dataset characters;
 
@@ -81,7 +81,9 @@ public class SaveManager : MonoBehaviour
 
 		syncManager = new CognitoSyncManager (credentials, new AmazonCognitoSyncConfig { RegionEndpoint = ENDPOINT });
 
-		InitializeCharactersDataset();
+        syncManager2 = new CognitoSyncManager(credentials, new AmazonCognitoSyncConfig { RegionEndpoint = ENDPOINT });
+
+        InitializeCharactersDataset();
     }
 	
 	void InitializeCharactersDataset()
