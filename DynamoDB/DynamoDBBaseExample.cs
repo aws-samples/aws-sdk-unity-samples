@@ -2,7 +2,8 @@
 // Copyright 2014-2015 Amazon.com, 
 // Inc. or its affiliates. All Rights Reserved.
 // 
-// Licensed under the Amazon Software License (the "License"). 
+// Licensed under the AWS Mobile SDK For Unity 
+// Sample Application License Agreement (the "License"). 
 // You may not use this file except in compliance with the 
 // License. A copy of the License is located 
 // in the "license" file accompanying this file. This file is 
@@ -11,6 +12,7 @@
 // for the specific language governing permissions and 
 // limitations under the License.
 //
+
 using UnityEngine;
 using System.Collections;
 using Amazon.DynamoDBv2;
