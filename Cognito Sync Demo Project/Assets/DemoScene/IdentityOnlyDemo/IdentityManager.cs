@@ -46,15 +46,15 @@ public class IdentityManager : MonoBehaviour
 
 	private void FacebookInitCallback()
 	{
+        //Uncomment if you want to auto-login with the last Facebook session remembered by the Facebook SDK.
 		/*if (FB.IsLoggedIn)
 		{
 			InitWithFacebook (FB.AccessToken);
 		}
-		else
+		else*/
 		{
 			loading = false;
-		}*/
-		loading = false;
+		}
 	}
 
     private void FacebookLoginCallback(FBResult result)
@@ -162,19 +162,16 @@ public class IdentityManager : MonoBehaviour
 	
     private void Init(string authProvider, string accessToken)
     {
-		if (string.IsNullOrEmpty(IDENTITY_POOL_ID))
+        if (string.IsNullOrEmpty(IDENTITY_POOL_ID))
 		{
 			throw new NotSupportedException ("Identity Pool ID is not set");
 		}
-		
-		//Enable Logs
-		//AmazonLogging.Level = AmazonLogging.LoggingLevel.DEBUG;
 
-		//Create a Credentials provider that uses Cognito Identity
-		credentials = new CognitoAWSCredentials(IDENTITY_POOL_ID, ENDPOINT);
+        //Create a Credentials provider that uses Cognito Identity
+        credentials = new CognitoAWSCredentials(IDENTITY_POOL_ID, ENDPOINT);
 
 		myIdentity = credentials.GetIdentityId();
-		/*
+
 		credentials.IdentityChangedEvent += (object sender, Amazon.CognitoIdentity.CognitoAWSCredentials.IdentityChangedArgs e) => {
 			Debug.Log("Identity Changed (old: '"+e.OldIdentityId+"', new: '"+e.NewIdentityId+"')");
 			myIdentity = e.NewIdentityId;
@@ -187,7 +184,7 @@ public class IdentityManager : MonoBehaviour
 
 		loggedIn = true;
 
-		UpdateIdentity();*/
+		UpdateIdentity();
 
 	}
 		
@@ -200,7 +197,11 @@ public class IdentityManager : MonoBehaviour
 	public void UpdateIdentity()
 	{
 		loading = true;
-		myIdentity = credentials.GetIdentityId();
+		credentials.GetIdentityIdAsync((AmazonCognitoIdentityResult<string> result) => {
+            Debug.Log("GetIdentity result: '" + result.Response + "'");
+            myIdentity = result.Response;
+            loading = false;
+        });
 	}
 	
 
