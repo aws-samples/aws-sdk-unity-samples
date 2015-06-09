@@ -272,7 +272,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a89488604e797df4292e21fb6defd315, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  IDENTITY_POOL_ID: 
+  IDENTITY_POOL_ID: us-east-1:949272bc-0e34-4a94-bdc9-fac30ef639ea
 --- !u!4 &290996796
 Transform:
   m_ObjectHideFlags: 0

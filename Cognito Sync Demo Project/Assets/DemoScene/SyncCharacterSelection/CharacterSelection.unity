@@ -254,7 +254,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5fc04c4de78e712419ecb079bd7dde12, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  IDENTITY_POOL_ID: 
+  IDENTITY_POOL_ID: us-east-1:44ebc9a6-e5ca-4ddc-96b5-e2d79dc4d8aa
 --- !u!114 &290996798
 MonoBehaviour:
   m_ObjectHideFlags: 0
