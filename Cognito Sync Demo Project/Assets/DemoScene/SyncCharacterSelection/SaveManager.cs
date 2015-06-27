@@ -317,6 +317,7 @@ public class SaveManager : MonoBehaviour
         var dataset = sender as Dataset;
         Debug.LogError("Sync failed for dataset '" + dataset.Metadata.DatasetName + "'");
         Debug.LogError(e.Exception.GetType() + ": " + e.Exception.Message);
+        GetComponent<CharacterList>().enabled = true; //Enable GUI
     }
 
 }
