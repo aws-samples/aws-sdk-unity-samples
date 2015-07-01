@@ -101,7 +101,7 @@ namespace Amazon.CognitoSync.SyncManager
         /// </summary>
         /// <returns>Dataset loaded from local storage</returns>
         /// <param name="datasetName">DatasetName dataset name, must be [a-zA-Z0=9_.:-]+</param>
-        public Dataset OpenOrCreateDataset(string datasetName)
+        public virtual Dataset OpenOrCreateDataset(string datasetName)
         {
             DatasetUtils.ValidateDatasetName(datasetName);
             Local.CreateDataset(GetIdentityId(), datasetName);

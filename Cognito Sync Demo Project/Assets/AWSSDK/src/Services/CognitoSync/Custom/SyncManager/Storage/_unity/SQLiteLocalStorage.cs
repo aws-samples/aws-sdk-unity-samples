@@ -14,7 +14,6 @@
 // for the specific language governing permissions and 
 // limitations under the License.
 //
-
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -36,7 +35,7 @@ namespace Amazon.CognitoSync.SyncManager.Internal
     public class SQLiteLocalStorage : ILocalStorage
     {
         private static object sqlite_lock = new object();
-
+        
         internal static readonly string TABLE_DATASETS = "datasets";
         internal static readonly string TABLE_RECORDS = "records";
         internal readonly string dataPath;
@@ -224,7 +223,7 @@ namespace Amazon.CognitoSync.SyncManager.Internal
             return byteArray;
         }
 
-        public void CreateDataset(string identityId, string datasetName)
+        public  void CreateDataset(string identityId, string datasetName)
         {
             lock (sqlite_lock)
             {
@@ -262,7 +261,7 @@ namespace Amazon.CognitoSync.SyncManager.Internal
             }
         }
 
-        public string GetValue(string identityId, string datasetName, string key)
+        public  string GetValue(string identityId, string datasetName, string key)
         {
             lock (sqlite_lock)
             {
@@ -279,7 +278,7 @@ namespace Amazon.CognitoSync.SyncManager.Internal
             }
         }
 
-        public void PutValue(string identityId, string datasetName, string key, string value)
+        public  void PutValue(string identityId, string datasetName, string key, string value)
         {
             lock (sqlite_lock)
             {
@@ -296,7 +295,7 @@ namespace Amazon.CognitoSync.SyncManager.Internal
             }
         }
 
-        public Dictionary<string, string> GetValueMap(string identityId, string datasetName)
+        public  Dictionary<string, string> GetValueMap(string identityId, string datasetName)
         {
             lock (sqlite_lock)
             {
@@ -315,7 +314,7 @@ namespace Amazon.CognitoSync.SyncManager.Internal
             }
         }
 
-        public void PutAllValues(string identityId, string datasetName, IDictionary<string, string> values)
+        public  void PutAllValues(string identityId, string datasetName, IDictionary<string, string> values)
         {
             lock (sqlite_lock)
             {
@@ -327,7 +326,7 @@ namespace Amazon.CognitoSync.SyncManager.Internal
             }
         }
 
-        public List<DatasetMetadata> GetDatasetMetadata(string identityId)
+        public  List<DatasetMetadata> GetDatasetMetadata(string identityId)
         {
             lock (sqlite_lock)
             {
@@ -357,7 +356,7 @@ namespace Amazon.CognitoSync.SyncManager.Internal
             }
         }
 
-        public DatasetMetadata GetDatasetMetadata(string identityId, string datasetName)
+        public  DatasetMetadata GetDatasetMetadata(string identityId, string datasetName)
         {
             lock (sqlite_lock)
             {
@@ -365,7 +364,7 @@ namespace Amazon.CognitoSync.SyncManager.Internal
             }
         }
 
-        public Record GetRecord(string identityId, string datasetName, string key)
+        public  Record GetRecord(string identityId, string datasetName, string key)
         {
             lock (sqlite_lock)
             {
@@ -399,7 +398,7 @@ namespace Amazon.CognitoSync.SyncManager.Internal
             }
         }
 
-        public List<Record> GetRecords(string identityId, string datasetName)
+        public  List<Record> GetRecords(string identityId, string datasetName)
         {
             lock (sqlite_lock)
             {
@@ -432,7 +431,7 @@ namespace Amazon.CognitoSync.SyncManager.Internal
             }
         }
 
-        public void PutRecords(string identityId, string datasetName, List<Record> records)
+        public  void PutRecords(string identityId, string datasetName, List<Record> records)
         {
             lock (sqlite_lock)
             {
@@ -443,7 +442,7 @@ namespace Amazon.CognitoSync.SyncManager.Internal
             }
         }
 
-        public void DeleteDataset(string identityId, string datasetName)
+        public  void DeleteDataset(string identityId, string datasetName)
         {
             lock (sqlite_lock)
             {
@@ -489,7 +488,7 @@ namespace Amazon.CognitoSync.SyncManager.Internal
             }
         }
 
-        public void PurgeDataset(string identityId, string datasetName)
+        public  void PurgeDataset(string identityId, string datasetName)
         {
             lock (sqlite_lock)
             {
@@ -518,7 +517,7 @@ namespace Amazon.CognitoSync.SyncManager.Internal
             }
         }
 
-        public long GetLastSyncCount(string identityId, string datasetName)
+        public  long GetLastSyncCount(string identityId, string datasetName)
         {
             long lastSyncCount = 0;
             lock (sqlite_lock)
@@ -552,7 +551,7 @@ namespace Amazon.CognitoSync.SyncManager.Internal
             }
         }
 
-        public List<Record> GetModifiedRecords(string identityId, string datasetName)
+        public  List<Record> GetModifiedRecords(string identityId, string datasetName)
         {
             lock (sqlite_lock)
             {
@@ -588,7 +587,7 @@ namespace Amazon.CognitoSync.SyncManager.Internal
             }
         }
 
-        public void UpdateLastSyncCount(string identityId, string datasetName, long lastSyncCount)
+        public  void UpdateLastSyncCount(string identityId, string datasetName, long lastSyncCount)
         {
             lock (sqlite_lock)
             {
@@ -621,7 +620,7 @@ namespace Amazon.CognitoSync.SyncManager.Internal
             }
         }
 
-        public void WipeData()
+        public  void WipeData()
         {
             lock (sqlite_lock)
             {
@@ -651,7 +650,7 @@ namespace Amazon.CognitoSync.SyncManager.Internal
             return oldNameSet;
         }
 
-        public void ChangeIdentityId(string oldIdentityId, string newIdentityId)
+        public  void ChangeIdentityId(string oldIdentityId, string newIdentityId)
         {
             Debug.Log("Reparenting datasets from " + oldIdentityId + " to " + newIdentityId);
             GetCommonDatasetNames(oldIdentityId, newIdentityId);
@@ -827,7 +826,7 @@ namespace Amazon.CognitoSync.SyncManager.Internal
 
         }
 
-        public void UpdateDatasetMetadata(string identityId, List<DatasetMetadata> datasetMetadata)
+        public  void UpdateDatasetMetadata(string identityId, List<DatasetMetadata> datasetMetadata)
         {
             lock (sqlite_lock)
             {
@@ -1042,10 +1041,10 @@ namespace Amazon.CognitoSync.SyncManager.Internal
                     {
                         stmt = db.Prepare(
                         RecordColumns.BuildUpdate(
-                            new string[] {
-                                RecordColumns.IDENTITY_ID, RecordColumns.DATASET_NAME, RecordColumns.KEY,
-                                RecordColumns.VALUE, RecordColumns.MODIFIED, RecordColumns.SYNC_COUNT,
-                                RecordColumns.DEVICE_LAST_MODIFIED_TIMESTAMP
+                            new string[] { 
+                                RecordColumns.IDENTITY_ID, RecordColumns.DATASET_NAME, RecordColumns.KEY, 
+                                RecordColumns.VALUE, RecordColumns.MODIFIED, RecordColumns.SYNC_COUNT, 
+                                RecordColumns.DEVICE_LAST_MODIFIED_TIMESTAMP 
                             },
                             RecordColumns.IDENTITY_ID + " = @whereIdentityId AND " +
                             RecordColumns.DATASET_NAME + " = @whereDatasetName AND " +
@@ -1218,5 +1217,3 @@ namespace Amazon.CognitoSync.SyncManager.Internal
 
     }
 }
-
-     

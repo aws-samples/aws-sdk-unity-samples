@@ -156,7 +156,7 @@ namespace Amazon.CognitoSync.SyncManager
         /// <see cref="Amazon.CognitoSync.SyncManager.Record"/> doesn't exist or is marked deleted, null will be returned.
         /// </summary>
         /// <param name="key">key of the record in the dataset.</param>
-        public string Get(string key)
+        public virtual string Get(string key)
         {
             return _local.GetValue(GetIdentityId(), _datasetName,
                                   DatasetUtils.ValidateRecordKey(key));
@@ -177,7 +177,7 @@ namespace Amazon.CognitoSync.SyncManager
         /// as deleted records are excluded.
         /// </summary>
         /// <returns>Key/Value representation of all records, excluding deleted ones</returns>
-        public IDictionary<string, string> GetAll()
+        public virtual IDictionary<string, string> GetAll()
         {
             IDictionary<string, string> map = new Dictionary<string, string>();
             foreach (Record record in _local.GetRecords(GetIdentityId(), _datasetName))
@@ -194,7 +194,7 @@ namespace Amazon.CognitoSync.SyncManager
         /// Retrieves all raw records, including those marked as deleted, from local storage.
         /// </summary>
         /// <returns>List of all raw records</returns>
-        public IList<Record> GetAllRecords()
+        public virtual IList<Record> GetAllRecords()
         {
             return _local.GetRecords(GetIdentityId(), _datasetName);
         }
@@ -253,7 +253,7 @@ namespace Amazon.CognitoSync.SyncManager
         /// <param name="key">Key of the record</param>
         /// <param name="value">String value of a <see cref="Amazon.CognitoSync.SyncManager.Record"/> to be put into the
         /// <see cref="Amazon.CognitoSync.SyncManager.Dataset"/></param>
-        public void Put(string key, string value)
+        public virtual void Put(string key, string value)
         {
             _local.PutValue(GetIdentityId(), _datasetName,
                            DatasetUtils.ValidateRecordKey(key), value);
@@ -263,7 +263,7 @@ namespace Amazon.CognitoSync.SyncManager
         /// Populates a dataset with a dictionary of key/value pairs
         /// </summary>
         /// <param name="values">An IDictionary of key/value pairs</param>
-        public void PutAll(IDictionary<string, string> values)
+        public virtual void PutAll(IDictionary<string, string> values)
         {
             foreach (string key in values.Keys)
             {
@@ -373,6 +373,7 @@ namespace Amazon.CognitoSync.SyncManager
 
                 if (!resume)
                 {
+                    EndSynchronizeAndCleanup();
                     FireSyncFailureEvent(new OperationCanceledException(string.Format("Sync canceled on merge for dataset - {0}", this._datasetName)));
                     return;
                 }

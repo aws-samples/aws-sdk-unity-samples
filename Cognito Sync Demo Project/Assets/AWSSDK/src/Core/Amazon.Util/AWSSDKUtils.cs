@@ -40,7 +40,7 @@ namespace Amazon.Util
         internal const string DefaultRegion = "us-east-1";
         internal const string DefaultGovRegion = "us-gov-west-1";
 
-        internal const string SDKVersionNumber = "2.0.0.1";
+        internal const string SDKVersionNumber = "2.0.0.2";
 
         internal const int DefaultMaxRetry = 3;
         private const int DefaultConnectionLimit = 50;
