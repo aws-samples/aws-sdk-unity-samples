@@ -18,8 +18,8 @@ namespace UnityEditor.FacebookEditor
             {
                 Debug.LogWarning("You didn't specify a Facebook app ID.  Please add one using the Facebook menu in the main Unity editor.");
             }
-
-            if (target == BuildTarget.iPhone)
+			// Unity renamed build target from iPhone to iOS in Unity 5, this keeps both versions happy
+			if (target.ToString() == "iOS" || target.ToString() == "iPhone")
             {
                 UnityEditor.XCodeEditor.XCProject project = new UnityEditor.XCodeEditor.XCProject(path);
 

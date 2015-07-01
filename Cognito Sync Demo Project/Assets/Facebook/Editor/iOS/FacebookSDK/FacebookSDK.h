@@ -138,6 +138,6 @@
 
  */
 
-#define FB_IOS_SDK_VERSION_STRING @"3.20.0/Unity.6.2.1"
+#define FB_IOS_SDK_VERSION_STRING @"3.20.0/Unity.6.2.2"
 #define FB_IOS_SDK_TARGET_PLATFORM_VERSION @"v2.2"
 

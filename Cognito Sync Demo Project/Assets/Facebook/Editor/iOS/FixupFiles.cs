@@ -35,10 +35,15 @@ namespace UnityEditor.FacebookEditor
             data = Regex.Replace(data, @"\s+void\s+mono_dl_register_symbol\s+\(const\s+char\*\s+name,\s+void\s+\*addr\);", "");
             data = Regex.Replace(data, "typedef int gboolean;", "typedef int gboolean;\n\tvoid mono_dl_register_symbol (const char* name, void *addr);");
 
-            data = Regex.Replace(data, @"#endif\s+//\s*!\s*\(\s*TARGET_IPHONE_SIMULATOR\s*\)\s*}\s*void RegisterAllStrippedInternalCalls\s*\(\s*\)", "}\n\nvoid RegisterAllStrippedInternalCalls()");
-            data = Regex.Replace(data, @"mono_aot_register_module\(mono_aot_module_mscorlib_info\);",
-                                 "mono_aot_register_module(mono_aot_module_mscorlib_info);\n#endif // !(TARGET_IPHONE_SIMULATOR)");
-
+			//this only need to be done for unity 4, unity 5 declares user functions correctly
+			if (GetUnityVersionNumber () < 500) {
+				data = Regex.Replace(data,
+				                     @"#endif\s+//\s*!\s*\(\s*TARGET_IPHONE_SIMULATOR\s*\)\s*}\s*void RegisterAllStrippedInternalCalls\s*\(\s*\)",
+				                     "}\n\nvoid RegisterAllStrippedInternalCalls()");
+				data = Regex.Replace(data,
+				                     @"mono_aot_register_module\(mono_aot_module_mscorlib_info\);",
+				                     "mono_aot_register_module(mono_aot_module_mscorlib_info);\n#endif // !(TARGET_IPHONE_SIMULATOR)");
+			}
             Save (fullPath, data);
         }
 
