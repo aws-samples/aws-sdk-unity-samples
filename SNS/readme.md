@@ -9,6 +9,23 @@ Note: To run the SNS Sample you will need to create a Cognito Identity Pool, to 
 3. Add "Identity Pool Id","Android Platform Application Arn","iOS Platform Application Arn" and "Google Console Project Id" in "Inspector Pane". 
 4. You will need google-play-services.jar & android-support-v4.jar to run this project. You can find the play services library in the location `<android-sdk>/extras/google/google_play_services/libproject/google-play-services_lib/`. Import this project to eclipse and export the jar . Make sure that you use the latest version of google play services. Copy these jar files to the Assets/Plugin/Android folder in the project.
 5. Open SNSExample.cs and update your cognito and sns region endpoint to the appropriate endpoints.
+6. For Android - if you are using the same AndroidManifest.xml as shown [here](https://github.com/aws/aws-sdk-unity/blob/master/Assets/Plugins/Android/AndroidManifest.xml) do a replace of all occurances of com.amazonaws.unity to <your package name>. This includes
+```
+<manifest
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    package="<your package name>"
+...
+<permission android:name="<your-package-name>.permission.C2D_MESSAGE"
+      android:protectionLevel="signature" />
+  <uses-permission android:name="<your-package-name>.permission.C2D_MESSAGE" />
+...
+ <receiver
+        android:name="<package name for broadcastcast receiever>.GCMBroadcastReceiver"
+...
+ <category android:name="<your package name>" />
+...
+<service android:name="<packge name for service>.GCMIntentService" />
+```
 
 #####Run the sample scene
 The SNS Sample can only run on the Android or iOS device. Go to File->Build Settings and switch the player to Android or iOS and Build & Run the project.
