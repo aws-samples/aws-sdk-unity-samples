@@ -184,6 +184,7 @@ namespace AWSSDK.Examples
             else
             {
                 Debug.Log(result.Text);
+                Credentials.AddLogin ("graph.facebook.com", FB.AccessToken);
             }
 
         }
