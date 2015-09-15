@@ -134,7 +134,7 @@ namespace AWSSDK.Examples
             else if (GUILayout.Button("Delete local data", GUILayout.MinHeight(20), GUILayout.Width(Screen.width * 0.6f)))
             {
                 statusMessage = "Deleting all local data";
-                SyncManager.WipeData();
+                SyncManager.WipeData(false);
 				playerName = "Enter your name";
 				alias = "Enter your alias";
                 statusMessage = "Deleting all local data complete. ";
@@ -186,7 +186,6 @@ namespace AWSSDK.Examples
                 Debug.Log(result.Text);
                 Credentials.AddLogin ("graph.facebook.com", FB.AccessToken);
             }
-
         }
 
 #endif
