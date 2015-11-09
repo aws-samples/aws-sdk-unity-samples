@@ -1,0 +1,487 @@
+{
+  "AWSTemplateFormatVersion": "2010-09-09",
+  "Description": "Creates DynamoDB tables, Lambda Functions, and associated IAM roles for the AWS SDK for Unity Chess Game sample. **WARNING** This template creates AWS Resource that you may be billed for.",
+  "Resources": {
+    "ChessMatches": {
+      "Type": "AWS::DynamoDB::Table",
+      "Properties": {
+        "TableName": "ChessMatches",
+        "AttributeDefinitions": [
+          {
+            "AttributeName": "MatchId",
+            "AttributeType": "S"
+          },
+          {
+            "AttributeName": "BlackPlayerId",
+            "AttributeType": "S"
+          },
+          {
+            "AttributeName": "WhitePlayerId",
+            "AttributeType": "S"
+          }
+        ],
+        "KeySchema": [
+          {
+            "AttributeName": "MatchId",
+            "KeyType": "HASH"
+          }
+        ],
+        "ProvisionedThroughput": {
+          "ReadCapacityUnits": 1,
+          "WriteCapacityUnits": 1
+        },
+        "GlobalSecondaryIndexes": [
+          {
+            "IndexName": "BlackPlayerId-index",
+            "KeySchema": [
+              {
+                "AttributeName": "BlackPlayerId",
+                "KeyType": "HASH"
+              }
+            ],
+            "Projection": {
+              "ProjectionType": "KEYS_ONLY"
+            },
+            "ProvisionedThroughput": {
+              "ReadCapacityUnits": 1,
+              "WriteCapacityUnits": 1
+            }
+          },
+          {
+            "IndexName": "WhitePlayerId-index",
+            "KeySchema": [
+              {
+                "AttributeName": "WhitePlayerId",
+                "KeyType": "HASH"
+              }
+            ],
+            "Projection": {
+              "ProjectionType": "KEYS_ONLY"
+            },
+            "ProvisionedThroughput": {
+              "ReadCapacityUnits": 1,
+              "WriteCapacityUnits": 1
+            }
+          }
+        ]
+      },
+      "Metadata": {
+        "AWS::CloudFormation::Designer": {
+          "id": "770691c3-e9a9-48de-bbca-528301edb520"
+        }
+      }
+    },
+    "ChessPlayers": {
+      "Type": "AWS::DynamoDB::Table",
+      "Properties": {
+        "TableName": "ChessPlayers",
+        "AttributeDefinitions": [
+          {
+            "AttributeName": "Id",
+            "AttributeType": "S"
+          }
+        ],
+        "KeySchema": [
+          {
+            "AttributeName": "Id",
+            "KeyType": "HASH"
+          }
+        ],
+        "ProvisionedThroughput": {
+          "ReadCapacityUnits": 1,
+          "WriteCapacityUnits": 1
+        }
+      },
+      "Metadata": {
+        "AWS::CloudFormation::Designer": {
+          "id": "62784747-69cb-4d15-9724-3f70a6c55593"
+        }
+      }
+    },
+    "SNSEndpointLookup": {
+      "Type": "AWS::DynamoDB::Table",
+      "Properties": {
+        "TableName": "SNSEndpointLookup",
+        "AttributeDefinitions": [
+          {
+            "AttributeName": "SNSEndpointARN",
+            "AttributeType": "S"
+          },
+          {
+            "AttributeName": "PlayerId",
+            "AttributeType": "S"
+          }
+        ],
+        "KeySchema": [
+          {
+            "AttributeName": "PlayerId",
+            "KeyType": "HASH"
+          },
+          {
+            "AttributeName": "SNSEndpointARN",
+            "KeyType": "RANGE"
+          }
+        ],
+        "ProvisionedThroughput": {
+          "ReadCapacityUnits": 1,
+          "WriteCapacityUnits": 1
+        }
+      },
+      "Metadata": {
+        "AWS::CloudFormation::Designer": {
+          "id": "656f4e0d-77ed-453e-9126-ddbf2e7f8978"
+        }
+      }
+    },
+    "NewChessMatch": {
+      "Type": "AWS::Lambda::Function",
+      "Properties": {
+        "Handler": "index.handler",
+        "Role": {
+          "Fn::GetAtt": [
+            "NewChessMatchExecutionRole",
+            "Arn"
+          ]
+        },
+        "Code": {
+          "ZipFile": "function checkMatchId(e,a,n,t){var I=e+a,c={TableName:TABLE_NAME,Key:{MatchId:I}};dynamo.getItem(c,function(c,o){c?n.fail(c):Object.keys(o).length>0?checkMatchId(e,a+1,n,t):t(I)})}console.log('Loading function');var TABLE_NAME='ChessMatches',INITIAL_FEN='rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1',INITIAL_LONG_ALG_NOTATION=' ',doc=require('dynamodb-doc'),dynamo=new doc.DynamoDB();exports.handler=function(e,a){var n=e.requesterId,t=e.opponentId;n&&t||a.fail('Must provide requesterId and opponentId');var I,c;Math.random()<.5?(I=n,c=t):(I=t,c=n);var o=I+c,d=function(e){dynamo.putItem({TableName:TABLE_NAME,Item:{MatchId:e,BlackPlayerId:I,WhitePlayerId:c,FEN:INITIAL_FEN,AlgebraicNotation:INITIAL_LONG_ALG_NOTATION}},function(n){n?a.fail(n):a.succeed(e)})};checkMatchId(o,0,a,d)};"
+        },
+        "Runtime": "nodejs",
+        "Timeout": "25"
+      },
+      "Metadata": {
+        "AWS::CloudFormation::Designer": {
+          "id": "3c8126e7-61a5-4a7a-85c2-81a52cb80b5c"
+        }
+      },
+      "DependsOn": [
+        "NewChessMatchExecutionRole"
+      ]
+    },
+    "NewChessMatchExecutionRole": {
+      "Type": "AWS::IAM::Role",
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Effect": "Allow",
+              "Principal": {
+                "Service": [
+                  "lambda.amazonaws.com"
+                ]
+              },
+              "Action": [
+                "sts:AssumeRole"
+              ]
+            }
+          ]
+        },
+        "Policies": [
+          {
+            "PolicyName": "NewChessMatchRole",
+            "PolicyDocument": {
+              "Version": "2012-10-17",
+              "Statement": [
+                {
+                  "Action": [
+                    "dynamodb:DeleteItem",
+                    "dynamodb:GetItem",
+                    "dynamodb:PutItem",
+                    "dynamodb:Query",
+                    "dynamodb:Scan",
+                    "dynamodb:UpdateItem"
+                  ],
+                  "Effect": "Allow",
+                  "Resource": "*"
+                },
+                {
+                  "Resource": "*",
+                  "Action": [
+                    "logs:CreateLogGroup",
+                    "logs:CreateLogStream",
+                    "logs:PutLogEvents"
+                  ],
+                  "Effect": "Allow"
+                }
+              ]
+            }
+          }
+        ]
+      },
+      "Metadata": {
+        "AWS::CloudFormation::Designer": {
+          "id": "76004226-5748-4867-993e-8982c2c8ec6d"
+        }
+      }
+    },
+    "NewMoveNotifier": {
+      "Type": "AWS::Lambda::Function",
+      "Properties": {
+        "Handler": "index.handler",
+        "Role": {
+          "Fn::GetAtt": [
+            "NewMoveNotifierExecutionRole",
+            "Arn"
+          ]
+        },
+        "Code": {
+          "ZipFile": {
+            "Fn::Join": [
+              "",
+              [
+                "var AWS=require('aws-sdk');console.log('Loading event'),exports.handler=function(e,o){function r(e,o){if(e)recordProcessed(e);else{var r=new AWS.SNS({region:n}),t=o.Items.length;if(0===t)s(null);else{var a=function(e,o){e&&console.log(o),t--,0===t&&s(null)},d=JSON.stringify({'default':'It is now your turn in a chess match!',APNS_SANDBOX:{aps:{alert:'It is now your turn in a chess match!'}}});for(i=0;i<o.Items.length;i++){var l={MessageStructure:'json',Message:d,TargetArn:o.Items[i].SNSEndpointARN.S};r.publish(l,a)}}}}var t='",
+                {
+                  "Ref": "AWS::Region"
+                },
+                "',n='",
+                {
+                  "Ref": "SNSRegionParameter"
+                },
+                "',a=e.Records.length;if(0===a)o.succeed();else{var s=function(e){e&&console.log(e),a--,0===a&&o.succeed()};for(i=0;i<e.Records.length;i++)if(record=e.Records[i],'INSERT'==record.eventName||'MODIFY'==record.eventName)if(forsythEdwardsNotation=record.dynamodb.NewImage.FEN.S.trim(),nextMoveIndicator=forsythEdwardsNotation.split(' ')[1],playerToNotify='','w'==nextMoveIndicator?playerToNotify=record.dynamodb.NewImage.WhitePlayerId.S:'b'==nextMoveIndicator&&(playerToNotify=record.dynamodb.NewImage.BlackPlayerId.S),playerToNotify){var d=new AWS.DynamoDB({region:t}),l={TableName:'SNSEndpointLookup',KeyConditions:{PlayerId:{ComparisonOperator:'EQ',AttributeValueList:[{S:playerToNotify}]}}};d.query(l,r)}else s('Inavlid Forsyth Edwards Notation '+forsythEdwardsNotation);else s(null)}};"
+              ]
+            ]
+          }
+        },
+        "Runtime": "nodejs",
+        "Timeout": "25"
+      },
+      "Metadata": {
+        "AWS::CloudFormation::Designer": {
+          "id": "db9c579b-f6c7-4d5b-be20-e9cffe871d89"
+        }
+      },
+      "DependsOn": [
+        "NewMoveNotifierExecutionRole"
+      ]
+    },
+    "NewMoveNotifierExecutionRole": {
+      "Type": "AWS::IAM::Role",
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Effect": "Allow",
+              "Principal": {
+                "Service": [
+                  "lambda.amazonaws.com"
+                ]
+              },
+              "Action": [
+                "sts:AssumeRole"
+              ]
+            }
+          ]
+        },
+        "Policies": [
+          {
+            "PolicyName": "NewChessMatchRole",
+            "PolicyDocument": {
+              "Version": "2012-10-17",
+              "Statement": [
+                {
+                  "Effect": "Allow",
+                  "Action": [
+                    "lambda:InvokeFunction"
+                  ],
+                  "Resource": [
+                    "*"
+                  ]
+                },
+                {
+                  "Effect": "Allow",
+                  "Action": [
+                    "dynamodb:GetRecords",
+                    "dynamodb:GetShardIterator",
+                    "dynamodb:DescribeStream",
+                    "dynamodb:ListStreams",
+                    "dynamodb:Query",
+                    "sns:Publish",
+                    "logs:CreateLogGroup",
+                    "logs:CreateLogStream",
+                    "logs:PutLogEvents"
+                  ],
+                  "Resource": "*"
+                }
+              ]
+            }
+          }
+        ]
+      },
+      "Metadata": {
+        "AWS::CloudFormation::Designer": {
+          "id": "2316f579-0f91-459e-8d92-e5a2114caffb"
+        }
+      }
+    }
+  },
+  "Metadata": {
+    "AWS::CloudFormation::Designer": {
+      "770691c3-e9a9-48de-bbca-528301edb520": {
+        "size": {
+          "width": 60,
+          "height": 60
+        },
+        "position": {
+          "x": 340,
+          "y": 90
+        },
+        "z": 1,
+        "embeds": []
+      },
+      "62784747-69cb-4d15-9724-3f70a6c55593": {
+        "size": {
+          "width": 60,
+          "height": 60
+        },
+        "position": {
+          "x": 420,
+          "y": 90
+        },
+        "z": 1,
+        "embeds": []
+      },
+      "656f4e0d-77ed-453e-9126-ddbf2e7f8978": {
+        "size": {
+          "width": 60,
+          "height": 60
+        },
+        "position": {
+          "x": 380,
+          "y": 190
+        },
+        "z": 1,
+        "embeds": []
+      },
+      "3c8126e7-61a5-4a7a-85c2-81a52cb80b5c": {
+        "size": {
+          "width": 60,
+          "height": 60
+        },
+        "position": {
+          "x": 150,
+          "y": 90
+        },
+        "z": 1,
+        "embeds": [],
+        "isassociatedwith": [
+          "76004226-5748-4867-993e-8982c2c8ec6d"
+        ],
+        "dependson": [
+          "76004226-5748-4867-993e-8982c2c8ec6d"
+        ]
+      },
+      "76004226-5748-4867-993e-8982c2c8ec6d": {
+        "size": {
+          "width": 60,
+          "height": 60
+        },
+        "position": {
+          "x": 150,
+          "y": 190
+        },
+        "z": 1,
+        "embeds": []
+      },
+      "63683d6f-3f22-4a1d-a78e-df807ed929a5": {
+        "source": {
+          "id": "3c8126e7-61a5-4a7a-85c2-81a52cb80b5c"
+        },
+        "target": {
+          "id": "76004226-5748-4867-993e-8982c2c8ec6d"
+        },
+        "z": 2
+      },
+      "db9c579b-f6c7-4d5b-be20-e9cffe871d89": {
+        "size": {
+          "width": 60,
+          "height": 60
+        },
+        "position": {
+          "x": 230,
+          "y": 90
+        },
+        "z": 1,
+        "embeds": [],
+        "isassociatedwith": [
+          "2316f579-0f91-459e-8d92-e5a2114caffb"
+        ],
+        "dependson": [
+          "2316f579-0f91-459e-8d92-e5a2114caffb"
+        ]
+      },
+      "2316f579-0f91-459e-8d92-e5a2114caffb": {
+        "size": {
+          "width": 60,
+          "height": 60
+        },
+        "position": {
+          "x": 230,
+          "y": 190
+        },
+        "z": 1,
+        "embeds": []
+      },
+      "aaeb90eb-cab7-49cd-998c-22eb2580afca": {
+        "source": {
+          "id": "db9c579b-f6c7-4d5b-be20-e9cffe871d89"
+        },
+        "target": {
+          "id": "2316f579-0f91-459e-8d92-e5a2114caffb"
+        },
+        "z": 11
+      }
+    }
+  },
+  "Outputs": {
+    "NewMatchLambdaFunctionName": {
+      "Value": {
+        "Fn::Join": [
+          "",
+          [
+            "\"",
+            {
+              "Ref": "NewChessMatch"
+            },
+            "\""
+          ]
+        ]
+      },
+      "Description": "The value to assign the NewMatchLambdaFunctionName constant in the Assets/ChessGameScripts/ChessNetworkManager.cs file in your Unity project."
+    },
+    "NewMoveNotifierLambdaFunctionName": {
+      "Value": {
+        "Fn::Join": [
+          "",
+          [
+            "\"",
+            {
+              "Ref": "NewMoveNotifier"
+            },
+            "\""
+          ]
+        ]
+      },
+      "Description": "Find this function in the AWS Lambda console and add a DynamoDB Stream from the ChessMatches table as an event source."
+    }
+  },
+  "Parameters": {
+    "SNSRegionParameter": {
+      "Type": "String",
+      "Default": "us-east-1",
+      "AllowedValues": [
+        "us-east-1",
+        "us-west-2",
+        "us-west-1",
+        "eu-west-1",
+        "eu-central-1",
+        "ap-southeast-1",
+        "ap-southeast-2",
+        "ap-northeast-1",
+        "sa-east-1"
+      ],
+      "Description": "Enter the region endpoint for you SNS application(s). Default is us-east-1."
+    }
+  }
+}
