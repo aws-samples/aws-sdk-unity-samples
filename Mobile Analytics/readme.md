@@ -8,6 +8,9 @@
 3. Click on the AmazonMobileAnalyticsSample game object.
 4. Specify your App Id (created in the Amazon Mobile Analytics console at https://console.aws.amazon.com/mobileanalytics/home/?region=us-east-1#/overview?consoleState=management) in the "App Id" field.
 5. Specify your Cognito Identity Pool Id (created using the Cognito console at https://console.aws.amazon.com/cognito/home?region=us-east-1#) in the "Cognito Identity Pool Id" field.
+6. If your Cognito Identity Pool is in a region other than "us-east-1", change the "Cognito Identity Region" value in "Inspector Pane".
+7. If you are using a region other than "us-east-1" for Mobile Analytics, you should change the "Analytics Region" value as well.
+
 
 #####Run the sample scene
 1. Click the "Run" button. 

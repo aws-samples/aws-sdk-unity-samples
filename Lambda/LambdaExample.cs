@@ -27,6 +27,17 @@ namespace AWSSDK.Examples
     public class LambdaExample : MonoBehaviour
     {
         public string IdentityPoolId = "";
+        public string CognitoIdentityRegion = RegionEndpoint.USEast1.SystemName;
+        private RegionEndpoint _CognitoIdentityRegion
+        {
+            get { return RegionEndpoint.GetBySystemName(CognitoIdentityRegion); }
+        }
+        public string LambdaRegion = RegionEndpoint.USEast1.SystemName;
+        private RegionEndpoint _LambdaRegion
+        {
+            get { return RegionEndpoint.GetBySystemName(LambdaRegion); }
+        }
+
 
         public Button InvokeButton = null;
         public Button ListFunctionsButton = null;
@@ -51,7 +62,7 @@ namespace AWSSDK.Examples
             get
             {
                 if (_credentials == null)
-                    _credentials = new CognitoAWSCredentials(IdentityPoolId, RegionEndpoint.USEast1);
+                    _credentials = new CognitoAWSCredentials(IdentityPoolId, _CognitoIdentityRegion);
                 return _credentials;
             }
         }
@@ -62,7 +73,7 @@ namespace AWSSDK.Examples
             {
                 if (_lambdaClient == null)
                 {
-                    _lambdaClient = new AmazonLambdaClient(Credentials, RegionEndpoint.USEast1);
+                    _lambdaClient = new AmazonLambdaClient(Credentials, _LambdaRegion);
                 }
                 return _lambdaClient;
             }

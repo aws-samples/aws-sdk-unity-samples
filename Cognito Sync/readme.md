@@ -8,6 +8,7 @@ This sample shows how to store data in the cloud using Amazon Cognito Sync. The 
 1. Open the CognitoSyncManagerSample scene file.
 2. Click "CognitoSyncManagerSample" game object in "Hierarchy Pane".
 3. Add "Identity Pool Id" in "Inspector Pane". A pool can be created in the [Cognito console]( https://console.aws.amazon.com/cognito/home).
+4. If your Cognito Identity Pool is in a region other than "us-east-1", change the "Region" value in "Inspector Pane".
 
 #####Run the sample scene
 1. Click the "Run" button. 

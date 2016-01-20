@@ -28,6 +28,21 @@ namespace AWSSDK.Examples
     public class KinesisExample : MonoBehaviour
     {
         public string IdentityPoolId = "";
+ 
+        public string CognitoIdentityRegion = RegionEndpoint.USEast1.SystemName;
+
+        private RegionEndpoint _CognitoIdentityRegion
+        {
+            get { return RegionEndpoint.GetBySystemName(CognitoIdentityRegion); }
+        }
+
+        public string KinesisRegion = RegionEndpoint.USEast1.SystemName;
+
+        private RegionEndpoint _KinesisRegion
+        {
+            get { return RegionEndpoint.GetBySystemName(KinesisRegion); }
+        }
+
         public InputField StreamNameField = null;
         public InputField RecordField = null;
         public Button PutRecordButton = null;
@@ -53,7 +68,7 @@ namespace AWSSDK.Examples
             get
             {
                 if (_credentials == null)
-                    _credentials = new CognitoAWSCredentials(IdentityPoolId, RegionEndpoint.USEast1);
+                    _credentials = new CognitoAWSCredentials(IdentityPoolId, _CognitoIdentityRegion);
                 return _credentials;
             }
         }
@@ -64,7 +79,7 @@ namespace AWSSDK.Examples
             {
                 if (_kinesisClient == null)
                 {
-                    _kinesisClient = new AmazonKinesisClient(Credentials, RegionEndpoint.USEast1);
+                    _kinesisClient = new AmazonKinesisClient(Credentials, _KinesisRegion);
                 }
                 return _kinesisClient;
             }
@@ -146,7 +161,7 @@ namespace AWSSDK.Examples
         /// <summary>
         /// Example method to demostrate Kinesis DescribeStream. Prints information about the
         /// stream specified in the "Stream Name" Text Input Field.
-        /// </summary
+        /// </summary>
         public void DescribeStream()
         {
             ResultText.text = string.Format("Describing Stream '{0}'.", StreamNameField.text);

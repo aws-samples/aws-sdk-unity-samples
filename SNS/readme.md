@@ -8,9 +8,10 @@ Note: To run the SNS Sample you will need to create a Cognito Identity Pool, to 
 1. Open the SNSExample unity scene
 2. Click "SNSExample" game object in "Hierarchy Pane".
 3. Add "Identity Pool Id","Android Platform Application Arn","iOS Platform Application Arn" and "Google Console Project Id" in "Inspector Pane". 
-4. You will need google-play-services.jar & android-support-v4.jar to run this project. You can find the play services library in the location `<android-sdk>/extras/google/google_play_services/libproject/google-play-services_lib/`. Import this project to eclipse and export the jar . Make sure that you use the latest version of google play services. Copy these jar files to the Assets/Plugin/Android folder in the project.
-5. Open SNSExample.cs and update your cognito and sns region endpoint to the appropriate endpoints.
-6. For Android - if you are using the same AndroidManifest.xml as shown [here](https://github.com/aws/aws-sdk-unity/blob/master/Assets/Plugins/Android/AndroidManifest.xml) do a replace of all occurances of com.amazonaws.unity to <your package name>. This includes
+4. If your Cognito Identity Pool is in a region other than "us-east-1", change the "Cognito Identity Region" value in "Inspector Pane".
+5. If you are using a region other than "us-east-1" for SNS, you should change the "SNS Region" value as well.
+6. You will need google-play-services.jar & android-support-v4.jar to run this project. You can find the play services library in the location `<android-sdk>/extras/google/google_play_services/libproject/google-play-services_lib/`. Import this project to eclipse and export the jar . Make sure that you use the latest version of google play services. Copy these jar files to the Assets/Plugin/Android folder in the project.
+7. For Android - if you are using the same AndroidManifest.xml as shown [here](https://github.com/aws/aws-sdk-unity/blob/master/Assets/Plugins/Android/AndroidManifest.xml) do a replace of all occurances of com.amazonaws.unity to <your package name>. This includes
 
 ```
 <manifest

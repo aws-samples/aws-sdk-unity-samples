@@ -14,6 +14,21 @@ namespace AWSSDK.Examples
     public class SESExample : MonoBehaviour
     {
         public string IdentityPoolId = "";
+ 
+        public string CognitoIdentityRegion = RegionEndpoint.USEast1.SystemName;
+
+        private RegionEndpoint _CognitoIdentityRegion
+        {
+            get { return RegionEndpoint.GetBySystemName(CognitoIdentityRegion); }
+        }
+
+        public string SESRegion = RegionEndpoint.USEast1.SystemName;
+
+        private RegionEndpoint _SESRegion
+        {
+            get { return RegionEndpoint.GetBySystemName(SESRegion); }
+        }
+
         public InputField txtToEmailAddress;
         public InputField txtEmailContent;
         public InputField txtEmailSubject;
@@ -30,7 +45,7 @@ namespace AWSSDK.Examples
             get
             {
                 if (_credentials == null)
-                    _credentials = new CognitoAWSCredentials(IdentityPoolId, RegionEndpoint.USEast1);
+                    _credentials = new CognitoAWSCredentials(IdentityPoolId, _CognitoIdentityRegion);
                 return _credentials;
             }
         }
@@ -41,7 +56,7 @@ namespace AWSSDK.Examples
             {
                 if (_sesClient == null)
                 {
-                    _sesClient = new AmazonSimpleEmailServiceClient(Credentials, RegionEndpoint.USEast1);
+                    _sesClient = new AmazonSimpleEmailServiceClient(Credentials, _SESRegion);
                 }
                 return _sesClient;
             }

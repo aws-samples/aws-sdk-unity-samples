@@ -29,12 +29,22 @@ namespace AWSSDK.Examples
         //identity pool id for cognito credentials
         public string IdentityPoolId = "";
 
+        public string CognitoIdentityRegion = RegionEndpoint.USEast1.SystemName;
+
+        private RegionEndpoint _CognitoIdentityRegion
+        {
+            get { return RegionEndpoint.GetBySystemName(CognitoIdentityRegion); }
+        }
+
+        public string SQSRegion = RegionEndpoint.USEast1.SystemName;
+
+        private RegionEndpoint _SQSRegion
+        {
+            get { return RegionEndpoint.GetBySystemName(SQSRegion); }
+        }
+
         //name of the queue you want to create
         public string QueueName = "AWS_SQS_EXAMPLE_QUEUE";
-
-        //set your regionendpoints here
-        private RegionEndpoint _cognitoRegion = RegionEndpoint.USEast1;
-        private RegionEndpoint _sqsRegion = RegionEndpoint.USEast1;
 
         private AWSCredentials _credentials;
 
@@ -43,7 +53,7 @@ namespace AWSSDK.Examples
             get
             {
                 if (_credentials == null)
-                    _credentials = new CognitoAWSCredentials(IdentityPoolId, _cognitoRegion);
+                    _credentials = new CognitoAWSCredentials(IdentityPoolId, _CognitoIdentityRegion);
                 return _credentials;
             }
         }
@@ -55,7 +65,7 @@ namespace AWSSDK.Examples
             get
             {
                 if (_sqsClient == null)
-                    _sqsClient = new AmazonSQSClient(Credentials, _sqsRegion);
+                    _sqsClient = new AmazonSQSClient(Credentials, _SQSRegion);
                 return _sqsClient;
             }
         }

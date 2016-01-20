@@ -22,9 +22,22 @@ using Amazon;
 
 namespace AWSSDK.Examples
 {
+
     public class DynamoDbBaseExample : MonoBehaviour
     {
         public string IdentityPoolId = "";
+        public string CognitoPoolRegion = RegionEndpoint.USEast1.SystemName;
+        public string DynamoRegion = RegionEndpoint.USEast1.SystemName;
+
+        private RegionEndpoint _CognitoPoolRegion
+        {
+            get { return RegionEndpoint.GetBySystemName(CognitoPoolRegion); }
+        }
+
+        private RegionEndpoint _DynamoRegion
+        {
+            get { return RegionEndpoint.GetBySystemName(DynamoRegion); }
+        }
 
         private static IAmazonDynamoDB _ddbClient;
 
@@ -35,7 +48,7 @@ namespace AWSSDK.Examples
             get
             {
                 if (_credentials == null)
-                    _credentials = new CognitoAWSCredentials(IdentityPoolId, RegionEndpoint.USEast1);
+                    _credentials = new CognitoAWSCredentials(IdentityPoolId, _CognitoPoolRegion);
                 return _credentials;
             }
         }
@@ -46,7 +59,7 @@ namespace AWSSDK.Examples
             {
                 if (_ddbClient == null)
                 {
-                    _ddbClient = new AmazonDynamoDBClient(Credentials,RegionEndpoint.USEast1);
+                    _ddbClient = new AmazonDynamoDBClient(Credentials, _DynamoRegion);
                 }
 
                 return _ddbClient;

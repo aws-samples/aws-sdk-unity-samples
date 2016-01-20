@@ -28,6 +28,20 @@ namespace AWSSDK.Examples
 
         public string appId = "YourAppId";
 
+        public string CognitoIdentityRegion = RegionEndpoint.USEast1.SystemName;
+
+        private RegionEndpoint _CognitoIdentityRegion
+        {
+            get { return RegionEndpoint.GetBySystemName(CognitoIdentityRegion); }
+        }
+
+        public string AnalyticsRegion = RegionEndpoint.USEast1.SystemName;
+
+        private RegionEndpoint _AnalyticsRegion
+        {
+            get { return RegionEndpoint.GetBySystemName(AnalyticsRegion); }
+        }
+
         private MobileAnalyticsManager analyticsManager;
 
         private CognitoAWSCredentials _credentials;
@@ -37,9 +51,9 @@ namespace AWSSDK.Examples
         {
             UnityInitializer.AttachToGameObject(this.gameObject);
 
-            _credentials = new CognitoAWSCredentials(IdentityPoolId, Amazon.RegionEndpoint.USEast1);
+            _credentials = new CognitoAWSCredentials(IdentityPoolId, _CognitoIdentityRegion);
             analyticsManager = MobileAnalyticsManager.GetOrCreateInstance(appId, _credentials,
-                                                                                Amazon.RegionEndpoint.USEast1);
+                                                                                _AnalyticsRegion);
         }
 
 

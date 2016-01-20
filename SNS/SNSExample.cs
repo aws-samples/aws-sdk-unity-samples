@@ -38,11 +38,21 @@ namespace AWSSDK.Examples
         
         //project id for android gcm
         public string GoogleConsoleProjectId = "";
-        
-        //set your regionendpoints here
-        private RegionEndpoint _cognitoRegion = RegionEndpoint.USEast1;
-        private RegionEndpoint _snsRegion = RegionEndpoint.USEast1;
-        
+
+        public string CognitoIdentityRegion = RegionEndpoint.USEast1.SystemName;
+
+        private RegionEndpoint _CognitoIdentityRegion
+        {
+            get { return RegionEndpoint.GetBySystemName(CognitoIdentityRegion); }
+        }
+
+        public string SNSRegion = RegionEndpoint.USEast1.SystemName;
+
+        private RegionEndpoint _SNSRegion
+        {
+            get { return RegionEndpoint.GetBySystemName(SNSRegion); }
+        }
+            
         public Button RegisterButton;
         public Button UnregisterButton;
         
@@ -65,7 +75,7 @@ namespace AWSSDK.Examples
             get
             {
                 if (_credentials == null)
-                    _credentials = new CognitoAWSCredentials(IdentityPoolId, _cognitoRegion);
+                    _credentials = new CognitoAWSCredentials(IdentityPoolId, _CognitoIdentityRegion);
                 return _credentials;
             }
         }
@@ -77,7 +87,7 @@ namespace AWSSDK.Examples
             get
             {
                 if (_snsClient == null)
-                    _snsClient = new AmazonSimpleNotificationServiceClient(Credentials, _snsRegion);
+                    _snsClient = new AmazonSimpleNotificationServiceClient(Credentials, _SNSRegion);
                 return _snsClient;
             }
         }

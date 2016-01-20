@@ -8,6 +8,9 @@ Open the HighLevelExample, LowLevelDynamoDBExample, and the TableQueryAndScanExa
 
 * Click the “HighLevel”, “LowLevel”, or “QueryAndScan” game object in "Hierarchy Pane".
 * Add "Identity Pool Id" in "Inspector Pane". A pool can be created in the [Cognito console](https://console.aws.amazon.com/cognito/home).
+* If your Cognito Identity Pool is in a region other than "us-east-1", change the "Cognito Identity Region" value in "Inspector Pane".
+* If you want to use a region other than "us-east-1" for DynamoDB, you can change the "Dynamo Region" value as well.
+
 
 Then in the Unity Menu go to File->Build Settings and in ‘Scenes to Build’, add the scenes in the following order
 
@@ -19,7 +22,7 @@ Then in the Unity Menu go to File->Build Settings and in ‘Scenes to Build’, 
 
 This will allow you to execute all the operation as a single game.
 
-3. The project will create 4 tables - ProductCatalog, Forum, Thread & Reply. Make sure that these tables are not already present. You can check the tables at the [DynamoDB console]( https://console.aws.amazon.com/dynamodb/).
+* The project will create 4 tables - ProductCatalog, Forum, Thread & Reply. Make sure that these tables are not already present. You can check the tables at the [DynamoDB console]( https://console.aws.amazon.com/dynamodb/).
 
 
 

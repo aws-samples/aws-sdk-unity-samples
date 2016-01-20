@@ -41,6 +41,13 @@ namespace AWSSDK.Examples
 		private string statusMessage = "";
 
         public string IdentityPoolId = "";
+       
+        public string Region = RegionEndpoint.USEast1.SystemName;
+        
+        private RegionEndpoint _Region
+        {
+            get { return RegionEndpoint.GetBySystemName(Region); }
+        }
 
         private CognitoAWSCredentials _credentials;
 
@@ -49,7 +56,7 @@ namespace AWSSDK.Examples
             get
             {
                 if (_credentials == null)
-					_credentials = new CognitoAWSCredentials(IdentityPoolId, RegionEndpoint.USEast1);
+					_credentials = new CognitoAWSCredentials(IdentityPoolId, _Region);
                 return _credentials;
             }
         }
@@ -63,7 +70,7 @@ namespace AWSSDK.Examples
             {
                 if (_syncManager == null)
                 {
-                    _syncManager = new CognitoSyncManager(Credentials, new AmazonCognitoSyncConfig { RegionEndpoint = RegionEndpoint.USEast1 });
+                    _syncManager = new CognitoSyncManager(Credentials, new AmazonCognitoSyncConfig { RegionEndpoint = _Region });
                 }
                 return _syncManager;
             }

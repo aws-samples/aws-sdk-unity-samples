@@ -8,7 +8,9 @@ Note: To run the Kinesis Streams Sample you will need to create a Cognito Identi
 1. Open the KinesisExample scene file.
 2. Click the "Kinesis" game object in "Hierarchy Pane".
 3. Add your Identity Pool Id to the "Identity Pool Id" field in "Inspector Pane".
-4. You might start with a landscape view, which may crop some of the example's UI. If this is the case, go to your Unity Build Settings, select Android or iOS, then press the "Switch Platforms" button.
+4. If your Cognito Identity Pool is in a region other than "us-east-1", change the "Cognito Identity Region" value in "Inspector Pane".
+5. If you are using a region other than "us-east-1" for Kinesis, you should change the "Kinesis Region" value as well.
+6. You might start with a landscape view, which may crop some of the example's UI. If this is the case, go to your Unity Build Settings, select Android or iOS, then press the "Switch Platforms" button.
 
 #####Run the sample scene
 1. Click the "Run" button.

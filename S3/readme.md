@@ -7,7 +7,8 @@ Note: To run the S3 Sample you will need to create a Cognito Identity Pool, to h
 1. Open the S3Example scene file.
 2. Click "S3" game object in "Hierarchy Pane".
 3. Add "Identity Pool Id","S3 Bucket Name" and "Sample File Name" in "Inspector Pane".
-
+4. If your Cognito Identity Pool is in a region other than "us-east-1", change the "Cognito Identity Region" value in "Inspector Pane".
+5. If you are using a region other than "us-east-1" for S3, you should change the "S3 Region" value as well.
 
 #####Run the sample scene
 1. Click the "Run" button. 

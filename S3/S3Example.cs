@@ -31,7 +31,16 @@ namespace AWSSDK.Examples
     public class S3Example : MonoBehaviour
     {
         public string IdentityPoolId = "";
-
+        public string CognitoIdentityRegion = RegionEndpoint.USEast1.SystemName;
+        private RegionEndpoint _CognitoIdentityRegion
+        {
+            get { return RegionEndpoint.GetBySystemName(CognitoIdentityRegion); }
+        }
+        public string S3Region = RegionEndpoint.USEast1.SystemName;
+        private RegionEndpoint _S3Region
+        {
+            get { return RegionEndpoint.GetBySystemName(S3Region); }
+        }
         public string S3BucketName = null;
         public string SampleFileName = null;
         public Button GetBucketListButton = null;
@@ -61,7 +70,7 @@ namespace AWSSDK.Examples
             get
             {
                 if (_credentials == null)
-                    _credentials = new CognitoAWSCredentials(IdentityPoolId, RegionEndpoint.USEast1);
+                    _credentials = new CognitoAWSCredentials(IdentityPoolId, _CognitoIdentityRegion);
                 return _credentials;
             }
         }
@@ -72,7 +81,7 @@ namespace AWSSDK.Examples
             {
                 if (_s3Client == null)
                 {
-                    _s3Client = new AmazonS3Client(Credentials,RegionEndpoint.USEast1);
+                    _s3Client = new AmazonS3Client(Credentials, _S3Region);
                 }
                 //test comment
                 return _s3Client;
