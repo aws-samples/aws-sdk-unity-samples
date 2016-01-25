@@ -13,6 +13,9 @@
 // limitations under the License.
 //
 
+//Add the Facebook Unity SDK and uncomment this to enable Facebook login
+//#define USE_FACEBOOK_LOGIN
+
 using UnityEngine;
 using System;
 using System.Collections;
@@ -24,9 +27,6 @@ using Amazon.Runtime;
 using Amazon.CognitoIdentity;
 using Amazon.CognitoIdentity.Model;
 using Amazon.CognitoSync.SyncManager;
-
-//Add the Facebook Unity SDK and uncomment this to enable Facebook login
-//#define USE_FACEBOOK_LOGIN
 
 namespace AWSSDK.Examples
 {
@@ -78,6 +78,7 @@ namespace AWSSDK.Examples
 
         void Start()
         {
+            UnityInitializer.AttachToGameObject(this.gameObject);
 
             // Open your datasets
             playerInfo = SyncManager.OpenOrCreateDataset("PlayerInfo");
@@ -244,7 +245,7 @@ namespace AWSSDK.Examples
             return true;
         }
 
-        private void HandleSyncSuccess(object sender, SyncSuccessEvent e)
+        private void HandleSyncSuccess(object sender, SyncSuccessEventArgs e)
         {
 
             var dataset = sender as Dataset;
@@ -263,7 +264,7 @@ namespace AWSSDK.Examples
             statusMessage = "Syncing to CognitoSync Cloud succeeded";
         }
 
-        private void HandleSyncFailure(object sender, SyncFailureEvent e)
+        private void HandleSyncFailure(object sender, SyncFailureEventArgs e)
         {
             var dataset = sender as Dataset;
             Debug.Log("Sync failed for dataset : " + dataset.Metadata.DatasetName);
