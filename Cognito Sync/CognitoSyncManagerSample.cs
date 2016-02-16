@@ -88,7 +88,7 @@ namespace AWSSDK.Examples
             playerName = string.IsNullOrEmpty(playerInfo.Get("playerName")) ? "Enter your full name" : playerInfo.Get("playerName");
 
 			// Define Synchronize callbacks
-			// when ds.Synchronize() is called the localDataset is merged with the remoteDataset 
+			// when ds.SynchronizeAsync() is called the localDataset is merged with the remoteDataset 
             // OnDatasetDeleted, OnDatasetMerged, OnDatasetSuccess,  the corresponding callback is fired.
             // The developer has the freedom of handling these events needed for the Dataset
             playerInfo.OnSyncSuccess += this.HandleSyncSuccess; // OnSyncSucess uses events/delegates pattern
@@ -137,7 +137,7 @@ namespace AWSSDK.Examples
                 statusMessage = "Saving to CognitoSync Cloud";
                 playerInfo.Put("alias", alias);
 				playerInfo.Put("playerName", playerName);
-				playerInfo.Synchronize();
+				playerInfo.SynchronizeAsync();
             }
             else if (GUILayout.Button("Delete local data", GUILayout.MinHeight(20), GUILayout.Width(Screen.width * 0.6f)))
             {
