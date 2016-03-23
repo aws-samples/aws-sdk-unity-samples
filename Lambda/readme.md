@@ -10,6 +10,8 @@ Note: To run the Lambda Sample you will need to create a Cognito Identity Pool, 
 3. Add your Identity Pool Id to the "Identity Pool Id" field in "Inspector Pane". 
 4. If your Cognito Identity Pool is in a region other than "us-east-1", change the "Cognito Identity Region" value in "Inspector Pane".
 5. If you are using a region other than "us-east-1" for Lambda, you should change the "Lambda Region" value as well.
+6. Set up a "link.xml" file as described on the [Unity SDK readme](https://github.com/aws/aws-sdk-net/blob/master/Unity.README.md#unity-sdk-fundamentals), which is necessary if you will be building with assembly stripping or IL2CPP. Be sure to add the line `<assembly fullname="AWSSDK.Lambda" preserve="all"/>`.
+
 
 
 #####Run the sample scene

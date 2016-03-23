@@ -11,6 +11,8 @@ Note: To run the Kinesis Streams Sample you will need to create a Cognito Identi
 4. If your Cognito Identity Pool is in a region other than "us-east-1", change the "Cognito Identity Region" value in "Inspector Pane".
 5. If you are using a region other than "us-east-1" for Kinesis, you should change the "Kinesis Region" value as well.
 6. You might start with a landscape view, which may crop some of the example's UI. If this is the case, go to your Unity Build Settings, select Android or iOS, then press the "Switch Platforms" button.
+7. Set up a "link.xml" file as described on the [Unity SDK readme](https://github.com/aws/aws-sdk-net/blob/master/Unity.README.md#unity-sdk-fundamentals), which is necessary if you will be building with assembly stripping or IL2CPP. Be sure to add the line `<assembly fullname="AWSSDK.Kinesis" preserve="all"/>`.
+
 
 #####Run the sample scene
 1. Click the "Run" button.
