@@ -97,12 +97,9 @@ namespace AWSSDK.Examples
         {
             ResultText.text = string.Format("Putting record with data '{0}' to Kinesis stream '{1}'.", RecordField.text, StreamNameField.text);
             using (var memoryStream = new MemoryStream())
+            using (var streamWriter = new StreamWriter(memoryStream))
             {
-                using (var streamWriter = new StreamWriter(memoryStream))
-                {
-                    streamWriter.Write(RecordField.text);
-                }
-
+                streamWriter.Write(RecordField.text);
                 Client.PutRecordAsync(new PutRecordRequest
                 {
                     Data = memoryStream,
