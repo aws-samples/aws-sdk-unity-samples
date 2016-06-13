@@ -237,8 +237,8 @@ You will be prompted to choose roles for identities in your pool. Create a role 
                 "sns:CreatePlatformEndpoint"
             ],
             "Resource": [
-                "arn:aws:<RESOURCE REGION>:*:app/APNS_SANDBOX/ChessGame",
-                "arn:aws:<RESOURCE REGION>:*:app/GCM/ChessGame"
+                "arn:aws:sns:<RESOURCE REGION>:*:app/APNS_SANDBOX/ChessGame",
+                "arn:aws:sns:<RESOURCE REGION>:*:app/GCM/ChessGame"
             ]
         },
         {
