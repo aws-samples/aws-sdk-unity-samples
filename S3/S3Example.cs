@@ -154,6 +154,7 @@ namespace AWSSDK.Examples
             ResultText.text += "\nCreating request object";
             var request = new PostObjectRequest()
             {
+                Region = _S3Region,
                 Bucket = S3BucketName,
                 Key = fileName,
                 InputStream = stream,
