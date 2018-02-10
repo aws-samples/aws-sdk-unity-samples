@@ -17,16 +17,13 @@
 //#define USE_FACEBOOK_LOGIN
 
 using UnityEngine;
-using System;
-using System.Collections;
 using System.Collections.Generic;
 
 using Amazon;
 using Amazon.CognitoSync;
-using Amazon.Runtime;
 using Amazon.CognitoIdentity;
-using Amazon.CognitoIdentity.Model;
 using Amazon.CognitoSync.SyncManager;
+using Facebook.Unity;
 
 namespace AWSSDK.Examples
 {
@@ -157,20 +154,21 @@ namespace AWSSDK.Examples
 			if (GUILayout.Button("Connect to Facebook", GUILayout.MinHeight(20), GUILayout.Width(Screen.width * 0.6f)))
 			{
 #if USE_FACEBOOK_LOGIN
-				statusMessage = "Connecting to Facebook";
+                var facebookPermissions = new List<string>() { "email" };
+                statusMessage = "Connecting to Facebook";
 				if (!FB.IsInitialized)
 				{
 					FB.Init(delegate()
 					        {
 						Debug.Log("starting thread");
-						
-						// shows to connect the current identityid or create a new identityid with facebook authentication
-						FB.Login("email", FacebookLoginCallback);
+
+                        // shows to connect the current identityid or create a new identityid with facebook authentication
+                        FB.LogInWithReadPermissions(facebookPermissions, FacebookLoginCallback);
 					});
 				}
 				else
 				{
-					FB.Login("email", FacebookLoginCallback);
+					FB.LogInWithReadPermissions(facebookPermissions, FacebookLoginCallback);
 				}
 #endif
 			}
@@ -180,7 +178,7 @@ namespace AWSSDK.Examples
 
         #region Public Authentication Providers
 #if USE_FACEBOOK_LOGIN
-        private void FacebookLoginCallback(FBResult result)
+        private void FacebookLoginCallback(ILoginResult result)
         {
             Debug.Log("FB.Login completed");
 
@@ -191,8 +189,7 @@ namespace AWSSDK.Examples
             }
             else
             {
-                Debug.Log(result.Text);
-                Credentials.AddLogin ("graph.facebook.com", FB.AccessToken);
+                Credentials.AddLogin ("graph.facebook.com", result.AccessToken.TokenString);
             }
         }
 
