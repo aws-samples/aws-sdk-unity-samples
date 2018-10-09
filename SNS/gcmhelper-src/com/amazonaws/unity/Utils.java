@@ -1,13 +1,17 @@
 package com.amazonaws.unity;
 
+import android.app.Activity;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
+import android.content.pm.PackageManager;
+import android.content.pm.ApplicationInfo;
 import android.support.v4.app.NotificationCompat;
 
+import com.unity3d.player.UnityPlayer;
 import com.unity3d.player.UnityPlayerProxyActivity;
 
 public class Utils {
@@ -43,6 +47,18 @@ public class Utils {
 	}
 
 	public static void showNotification(Context context, String contentText) {
-		showNotification(context, "", contentText);
+		showNotification(context, getApplicationName(), contentText);
+	}
+
+	private static String getApplicationName() {
+		Activity activity = UnityPlayer.currentActivity;
+		PackageManager pm = activity.getPackageManager();
+		ApplicationInfo ai;
+		try {
+			ai = pm.getApplicationInfo(activity.getPackageName(), 0);
+		} catch (PackageManager.NameNotFoundException e) {
+			ai = null;
+		}
+		return (ai != null) ? ai.loadLabel(pm).toString() : "";
 	}
 }
