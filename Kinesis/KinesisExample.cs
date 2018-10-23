@@ -53,6 +53,7 @@ namespace AWSSDK.Examples
         void Start()
         {
             UnityInitializer.AttachToGameObject(this.gameObject);
+            AWSConfigs.HttpClient = AWSConfigs.HttpClientOption.UnityWebRequest;
             PutRecordButton.onClick.AddListener(() => { PutRecord(); });
             ListStreamsButton.onClick.AddListener(() => { ListStreams(); });
             DescribeStreamButton.onClick.AddListener(() => { DescribeStream(); });

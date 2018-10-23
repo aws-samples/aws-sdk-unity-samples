@@ -48,6 +48,7 @@ namespace AWSSDK.Examples
         void Start()
         {
             UnityInitializer.AttachToGameObject(this.gameObject);
+            AWSConfigs.HttpClient = AWSConfigs.HttpClientOption.UnityWebRequest;
             InvokeButton.onClick.AddListener(() => { Invoke(); });
             ListFunctionsButton.onClick.AddListener(() => { ListFunctions(); });
         }

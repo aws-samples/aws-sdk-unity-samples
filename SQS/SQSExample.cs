@@ -82,6 +82,7 @@ namespace AWSSDK.Examples
         void Start()
         {
             UnityInitializer.AttachToGameObject(this.gameObject);
+            AWSConfigs.HttpClient = AWSConfigs.HttpClientOption.UnityWebRequest;
             CreateQueue.onClick.AddListener(CreateQueueListener);
             SendMessage.onClick.AddListener(SendMessageListener);
             RetrieveMessage.onClick.AddListener(RetrieveMessageListener);
