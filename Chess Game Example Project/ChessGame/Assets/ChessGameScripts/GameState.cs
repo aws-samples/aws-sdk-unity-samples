@@ -112,6 +112,7 @@ namespace AWSSDK.Examples.ChessGame
 
             public bool IsSelfTurn()
             {
+                //TODO: this condition should be checked on server
                 return (BoardState.TurnColor == BoardState.ChessPieceColor.White) == SelfIsWhite;
             }
         }
