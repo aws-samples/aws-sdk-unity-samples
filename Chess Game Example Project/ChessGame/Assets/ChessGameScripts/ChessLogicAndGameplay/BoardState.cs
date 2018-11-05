@@ -71,8 +71,10 @@ namespace AWSSDK.Examples.ChessGame
         };
         // Indexed by the column to retrieve the file letter.
         private const string ColumnToFile = "abcdefgh";
-
+        
+        //TODO: should be stored and calculated on server
         private ChessPiece[,] BoardGrid;
+        //TODO: should be stored and calculated on server
         private HashSet<ChessMove>[,] PossibleMovesGrid;
 
         public ChessPieceColor TurnColor { get; private set; }

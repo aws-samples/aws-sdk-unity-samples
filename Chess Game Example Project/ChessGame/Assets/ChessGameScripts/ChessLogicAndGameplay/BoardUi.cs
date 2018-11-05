@@ -164,6 +164,7 @@ namespace AWSSDK.Examples.ChessGame
             if (selected.HasValue)
             {
                 moves = matchState.BoardState.GetPossibleMoves(selected.Value);
+                //TODO: server.GetPossibleMoves(board_id, selected.value)
             }
             else
             {
@@ -221,12 +222,14 @@ namespace AWSSDK.Examples.ChessGame
                 var newMatchState = new GameState.MatchState(
                     matchState.Opponent,
                     matchState.BoardState.TryApplyMove(move, out putsUserInCheck),
+                    //TODO: TryApplyMove(move, board_id)
                     matchState.SelfIsWhite,
                     matchState.Identifier);
 
                 if (!putsUserInCheck)
                 {
                     bool isOpponentPiece = matchState.BoardState.GetPieceAtCoordinate(move.To).Type != BoardState.ChessPieceType.None;
+                    //TODO: GetPieceAtCoordinate(board_id, coord)
                     Color pieceHighlight = isOpponentPiece ? Color.red : Color.blue;
                     BoardState.ChessPiece fromPiece = matchState.BoardState.GetPieceAtCoordinate(move.From);
                     Image pieceImage = prefabToPieceImage(fromPiece, pieceHighlight);
