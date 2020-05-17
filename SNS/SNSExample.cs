@@ -64,6 +64,7 @@ namespace AWSSDK.Examples
         void Start()
         {
             UnityInitializer.AttachToGameObject(this.gameObject);
+            AWSConfigs.HttpClient = AWSConfigs.HttpClientOption.UnityWebRequest;
             RegisterButton.onClick.AddListener(RegisterDevice);
             UnregisterButton.onClick.AddListener(UnregisterDevice);
         }

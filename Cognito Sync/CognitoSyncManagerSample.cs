@@ -76,6 +76,7 @@ namespace AWSSDK.Examples
         void Start()
         {
             UnityInitializer.AttachToGameObject(this.gameObject);
+            AWSConfigs.HttpClient = AWSConfigs.HttpClientOption.UnityWebRequest;
 
             // Open your datasets
             playerInfo = SyncManager.OpenOrCreateDataset("PlayerInfo");

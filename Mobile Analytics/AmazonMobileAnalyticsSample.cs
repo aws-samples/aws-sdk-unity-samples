@@ -50,7 +50,7 @@ namespace AWSSDK.Examples
         void Start()
         {
             UnityInitializer.AttachToGameObject(this.gameObject);
-
+            AWSConfigs.HttpClient = AWSConfigs.HttpClientOption.UnityWebRequest;
             _credentials = new CognitoAWSCredentials(IdentityPoolId, _CognitoIdentityRegion);
             analyticsManager = MobileAnalyticsManager.GetOrCreateInstance(appId, _credentials,
                                                                                 _AnalyticsRegion);
